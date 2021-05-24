@@ -13,14 +13,13 @@ public class IsolationsCable {
 
     private String typeIsolations;
 
-    private String przekrojZew;
-
     private String przekrojWew;
 
+    private String przekrojZew;
     public IsolationsCable() {
     }
 
-    public IsolationsCable(String typeIsolations, String przekrojZew, String przekrojWew) {
+    public IsolationsCable(String typeIsolations, String przekrojWew, String przekrojZew) {
         this.typeIsolations = typeIsolations;
         this.przekrojZew = przekrojZew;
         this.przekrojWew = przekrojWew;
