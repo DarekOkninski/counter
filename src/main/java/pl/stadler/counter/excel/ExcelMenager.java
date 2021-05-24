@@ -26,7 +26,6 @@ public class ExcelMenager {
         for (int i = 0; i < amountSheets; i++) {
             if (workbook.getSheetName(i).equals(nameWorksheet)) {
                 numberOfSheet = i;
-
             }
         }
 
