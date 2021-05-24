@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import pl.stadler.counter.excel.ExcelMenager;
 import pl.stadler.counter.models.*;
 import pl.stadler.counter.repositories.*;
+import pl.stadler.counter.services.IsolationsCableService;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class DBInitializer {
     private DistancesRepository distancesRepository;
 
     @Autowired
-    private IsolationsCableRepository isolationsCableRepository;
+    private IsolationsCableService isolationsCableService;
 
     @Autowired
     private KabelListRepository kabelListRepository;
@@ -57,10 +58,18 @@ public class DBInitializer {
                     distancesRepository.save(new Distances(value.get(0)));
                 });
             }
-            if (isolationsCableRepository.findAll().isEmpty()) {
+            if (isolationsCableService.findAll().isEmpty()) {
                 Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//isolationsCable.xlsx", "Sheet1");
                 map.forEach((key, value) -> {
-                    isolationsCableRepository.save(new IsolationsCable(value.get(0), value.get(1), value.get(2)));
+
+                    IsolationsCable cable = IsolationsCable.builder()
+                            .typeIsolations(value.get(0))
+                            .przekrojWew(value.get(1))
+                            .przekrojZew(value.get(2))
+                            .build();
+
+//                    isolationsCableRepository.save(new IsolationsCable(value.get(0), value.get(1), value.get(2)));
+                    isolationsCableService.save(cable);
                 });
             }
             if (meshRepository.findAll().isEmpty()) {
