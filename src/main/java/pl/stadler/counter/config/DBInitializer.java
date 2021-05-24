@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import pl.stadler.counter.excel.ExcelMenager;
 import pl.stadler.counter.models.*;
 import pl.stadler.counter.repositories.*;
+import pl.stadler.counter.services.DistancesService;
 import pl.stadler.counter.services.IsolationsCableService;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class DBInitializer {
     private ClipLibraRepository clipLibraRepository;
 
     @Autowired
-    private DistancesRepository distancesRepository;
+    private DistancesService distancesService;
 
     @Autowired
     private IsolationsCableService isolationsCableService;
@@ -52,10 +53,13 @@ public class DBInitializer {
                 });
 
             }
-            if (distancesRepository.findAll().isEmpty()) {
+            if (distancesService.findAll().isEmpty()) {
                 Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//distances.xlsx", "Sheet1");
                 map.forEach((key, value) -> {
-                    distancesRepository.save(new Distances(value.get(0)));
+                    Distances distances =Distances.builder()
+                            .numberHarting(value.get(0))
+                            .build();
+                    distancesService.save(distances);
                 });
             }
             if (isolationsCableService.findAll().isEmpty()) {
@@ -68,7 +72,7 @@ public class DBInitializer {
                             .przekrojZew(value.get(2))
                             .build();
 
-//                    isolationsCableRepository.save(new IsolationsCable(value.get(0), value.get(1), value.get(2)));
+//
                     isolationsCableService.save(cable);
                 });
             }
@@ -78,11 +82,7 @@ public class DBInitializer {
                     meshRepository.save(new Mesh(value.get(0), value.get(1), value.get(2), value.get(3), value.get(3)));
                 });
             }
-            //dfsdsdfdsfdsfasdfds
-            //dfsdsdfdsfdsfasdfds
-            //dfsdsdfdsfdsfasdfds
-            //dfsdsdfdsfdsfasdfds
-            //dfsdsdfdsfdsfasdfds
+
 
         };
     }

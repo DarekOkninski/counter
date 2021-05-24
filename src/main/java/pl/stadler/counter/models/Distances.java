@@ -1,11 +1,20 @@
 package pl.stadler.counter.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Distances {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,34 +22,5 @@ public class Distances {
 
     private String numberHarting;
 
-    public Distances() {
-    }
 
-    public Distances(String numberHarting) {
-        this.numberHarting = numberHarting;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNumberHarting() {
-        return numberHarting;
-    }
-
-    public void setNumberHarting(String numberHarting) {
-        this.numberHarting = numberHarting;
-    }
-
-    @Override
-    public String toString() {
-        return "Distances{" +
-                "id=" + id +
-                ", numberHarting='" + numberHarting + '\'' +
-                '}';
-    }
 }
