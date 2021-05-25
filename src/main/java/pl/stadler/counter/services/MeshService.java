@@ -1,31 +1,30 @@
 package pl.stadler.counter.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 import pl.stadler.counter.models.Mesh;
 import pl.stadler.counter.repositories.MeshRepository;
 
 import java.util.List;
 
-@RestController
-@RequestMapping(path = "/distance")
+@Service
 public class MeshService {
-    private final MeshService meshServices;
+
+    private MeshRepository meshRepository;
 
     @Autowired
-    public MeshService(MeshService meshServices) {
-        this.meshServices = meshServices;
+    public MeshService(MeshRepository meshRepository) {
+        this.meshRepository = meshRepository;
     }
 
     public List<Mesh> findAll() {
-        return meshServices.findAll();
+        return meshRepository.findAll();
     }
 
     public Mesh findByColorMinMax(String color, String min, String max ) {
-        return meshServices.findByColorMinMax(color, min, max);
+        return meshRepository.findByColorAndMinSizeAndMaxSize(color, min, max).orElse(null);
     }
     public Mesh save(Mesh mesh){
-        return meshServices.save(mesh);
+        return meshRepository.save(mesh);
     }
 }

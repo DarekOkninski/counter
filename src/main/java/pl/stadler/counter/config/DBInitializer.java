@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 
 import pl.stadler.counter.excel.ExcelMenager;
 import pl.stadler.counter.models.*;
-import pl.stadler.counter.repositories.*;
+import pl.stadler.counter.services.ClipLibraService;
 import pl.stadler.counter.services.DistancesService;
 import pl.stadler.counter.services.IsolationsCableService;
+import pl.stadler.counter.services.MeshService;
 
 import java.util.List;
 import java.util.Map;
@@ -18,38 +19,45 @@ import java.util.Map;
 
 @Configuration
 public class DBInitializer {
-    private String clipLibraPath;
+    private String clipLibraPath = "";
     private String userName = System.getProperty("user.name");
-    @Autowired
+//    @Autowired
     private ExcelMenager excelMenager;
 
-    @Autowired
-    private ClipLibraRepository clipLibraRepository;
+//    @Autowired
+    private ClipLibraService clipLibraService;
 
-    @Autowired
+//    @Autowired
     private DistancesService distancesService;
 
-    @Autowired
+//    @Autowired
     private IsolationsCableService isolationsCableService;
 
-    @Autowired
-    private KabelListRepository kabelListRepository;
+    private MeshService meshService;
 
     @Autowired
-    private MeshRepository meshRepository;
-
-    @Autowired
-    private ProjectRepository projectRepository;
+    public DBInitializer(ExcelMenager excelMenager, ClipLibraService clipLibraService, DistancesService distancesService, IsolationsCableService isolationsCableService, MeshService meshService) {
+        this.excelMenager = excelMenager;
+        this.clipLibraService = clipLibraService;
+        this.distancesService = distancesService;
+        this.isolationsCableService = isolationsCableService;
+        this.meshService = meshService;
+    }
 
 
     @Bean
     InitializingBean init() {
         return () -> {
 
-            if (clipLibraRepository.findAll().isEmpty()) {
+            if (clipLibraService.findAll().isEmpty()) {
                 Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//libra.xlsx", "Sheet1");
                 map.forEach((key, value) -> {
-                    clipLibraRepository.save(new ClipLibra(value.get(0), value.get(1), value.get(2), value.get(3), value.get(4)));
+                    IsolationsCable isolationsCable = IsolationsCable.builder()
+                            .typeIsolations(value.get(0))
+                            .przekrojWew(value.get(1))
+                            .przekrojZew(value.get(2))
+                            .build();
+                    isolationsCableService.save(isolationsCable);
                 });
 
             }
@@ -76,10 +84,17 @@ public class DBInitializer {
                     isolationsCableService.save(cable);
                 });
             }
-            if (meshRepository.findAll().isEmpty()) {
+            if (meshService.findAll().isEmpty()) {
                 Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//mesh.xlsx", "Sheet1");
                 map.forEach((key, value) -> {
-                    meshRepository.save(new Mesh(value.get(0), value.get(1), value.get(2), value.get(3), value.get(3)));
+                    Mesh mesh = Mesh.builder()
+                            .color(value.get(0))
+                            .name(value.get(1))
+                            .minSize(value.get(2))
+                            .maxSize(value.get(3))
+                            .numberProducer(value.get(4))
+                            .build();
+                    meshService.save(mesh);
                 });
             }
 

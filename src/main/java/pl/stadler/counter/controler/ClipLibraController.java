@@ -1,6 +1,7 @@
 package pl.stadler.counter.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.stadler.counter.models.ClipLibra;
@@ -19,13 +20,16 @@ public class ClipLibraController {
         this.clipLibraService = clipLibraService;
     }
 
+    @GetMapping(path = "/find-all")
     public List<ClipLibra> findAll() {
         return clipLibraService.findAll();
     }
 
+    @GetMapping(path = "/find-by-number")
     public ClipLibra findByNumberHarting(String nameClip) {
         return clipLibraService.findByNameClip(nameClip);
     }
+    @GetMapping(path = "/save")
     public ClipLibra save(ClipLibra clipLibra){
         return clipLibraService.save(clipLibra);
     }
