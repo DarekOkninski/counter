@@ -19,30 +19,22 @@ import java.util.Map;
 
 @Configuration
 public class DBInitializer {
-    private String clipLibraPath = "";
     private String userName = System.getProperty("user.name");
-//    @Autowired
+    @Autowired
     private ExcelMenager excelMenager;
 
-//    @Autowired
+    @Autowired
     private ClipLibraService clipLibraService;
 
-//    @Autowired
+    @Autowired
     private DistancesService distancesService;
 
-//    @Autowired
+    @Autowired
     private IsolationsCableService isolationsCableService;
 
+    @Autowired
     private MeshService meshService;
 
-    @Autowired
-    public DBInitializer(ExcelMenager excelMenager, ClipLibraService clipLibraService, DistancesService distancesService, IsolationsCableService isolationsCableService, MeshService meshService) {
-        this.excelMenager = excelMenager;
-        this.clipLibraService = clipLibraService;
-        this.distancesService = distancesService;
-        this.isolationsCableService = isolationsCableService;
-        this.meshService = meshService;
-    }
 
 
     @Bean
@@ -50,7 +42,7 @@ public class DBInitializer {
         return () -> {
 
             if (clipLibraService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//libra.xlsx", "Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//libra.xlsx");
                 map.forEach((key, value) -> {
                     IsolationsCable isolationsCable = IsolationsCable.builder()
                             .typeIsolations(value.get(0))
@@ -62,7 +54,7 @@ public class DBInitializer {
 
             }
             if (distancesService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//distances.xlsx", "Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//distances.xlsx");
                 map.forEach((key, value) -> {
                     Distances distances =Distances.builder()
                             .numberHarting(value.get(0))
@@ -71,7 +63,7 @@ public class DBInitializer {
                 });
             }
             if (isolationsCableService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//isolationsCable.xlsx", "Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//isolationsCable.xlsx");
                 map.forEach((key, value) -> {
 
                     IsolationsCable cable = IsolationsCable.builder()
@@ -85,7 +77,7 @@ public class DBInitializer {
                 });
             }
             if (meshService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//mesh.xlsx", "Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//mesh.xlsx");
                 map.forEach((key, value) -> {
                     Mesh mesh = Mesh.builder()
                             .color(value.get(0))

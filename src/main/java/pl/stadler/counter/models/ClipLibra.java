@@ -28,10 +28,10 @@ public class ClipLibra {
     private String  diameterClip;
 
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "type1")
-    private Set<KabelList> cableNumer;
-
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "type1")
+//    private Set<KabelList> cableNumer;
+//
 
 
 

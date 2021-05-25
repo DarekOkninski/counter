@@ -2,6 +2,7 @@ package pl.stadler.counter.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.stadler.counter.models.ClipLibra;
@@ -29,7 +30,7 @@ public class ClipLibraController {
     public ClipLibra findByNumberHarting(String nameClip) {
         return clipLibraService.findByNameClip(nameClip);
     }
-    @GetMapping(path = "/save")
+    @PostMapping(path = "/save")
     public ClipLibra save(ClipLibra clipLibra){
         return clipLibraService.save(clipLibra);
     }

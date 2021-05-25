@@ -4,17 +4,20 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class ExcelMenager {
 
-    public Map<Integer, List<String>> readWorksheet(String fileLocation, String nameWorksheet) throws IOException {
+    public Map<Integer, List<String>> readWorksheet(String fileLocation) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(fileLocation);
         Workbook workbook = new XSSFWorkbook(fileInputStream);
 
@@ -23,47 +26,67 @@ public class ExcelMenager {
 
         // szukaj odpowiedniej zakładki
         int numberOfSheet = -1;
-        for (int i = 0; i < amountSheets; i++) {
-            if (workbook.getSheetName(i).equals(nameWorksheet)) {
-                numberOfSheet = i;
-            }
-        }
+        for (int j = 0; j < amountSheets; j++) {
+            if (workbook.getSheetName(j).toUpperCase().contains("KABELLISTE")) {
 
-        if (numberOfSheet > -1) {
-            Sheet sheet = workbook.getSheetAt(numberOfSheet);
-            // pobranie nazw arkuszów
-            Map<Integer, List<String>> data = new HashMap<>();
-            int i = 0;
-            for (Row row : sheet) {
-                data.put(i, new ArrayList<String>());
-                for (Cell cell : row) {
-                    switch (cell.getCellType()) {
-                        case STRING:
-                            data.get(i).add(cell.getRichStringCellValue().getString().replace(" ", ""));
-                            break;
-                        case NUMERIC:
-                            if (DateUtil.isCellDateFormatted(cell)) {
-                                data.get(i).add(String.valueOf(cell.getDateCellValue()));
-                            } else {
-                                // zrzutowanie na liczbę całkowitą
+                Sheet sheet = workbook.getSheetAt(j);
+                // pobranie nazw arkuszów
+                Map<Integer, List<String>> data = new HashMap<>();
+                int i = 0;
+                for (Row row : sheet) {
+                    data.put(i, new ArrayList<String>());
+                    for (Cell cell : row) {
+                        switch (cell.getCellType()) {
+                            case STRING:
+                                data.get(i).add(cell.getRichStringCellValue().getString().replace(" ", ""));
+                                break;
+                            case NUMERIC:
+                                if (DateUtil.isCellDateFormatted(cell)) {
+                                    data.get(i).add(String.valueOf(cell.getDateCellValue()));
+                                } else {
+                                    // zrzutowanie na liczbę całkowitą
+                                    data.get(i).add(String.valueOf((int) cell.getNumericCellValue()));
+                                }
+                                break;
+                            case FORMULA:
                                 data.get(i).add(String.valueOf((int) cell.getNumericCellValue()));
-                            }
-                            break;
-                        case FORMULA:
-                            data.get(i).add(String.valueOf((int) cell.getNumericCellValue()));
-                            break;
-                        default:
-                            data.get(i).add(" ");
+                                break;
+                            default:
+                                data.get(i).add(" ");
+                        }
                     }
+                    i++;
                 }
-                i++;
-            }
 
-            fileInputStream.close();
-            workbook.close();
-            return data;
+                fileInputStream.close();
+                workbook.close();
+                return data;
+            }
         }
         return null;
     }
+    public Map<Integer, List<String>> getMapFromCSV(String filePath) throws IOException{
+
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        Map<Integer, List<String>> data = new HashMap<>();
+        String read = "";
+        ArrayList<String> x;
+        int i = 0;
+        reader.readLine();
+        while((read = reader.readLine())!=null){
+
+            x = new ArrayList<>(Arrays.asList(read.split(";")));
+            x.forEach(y -> y.replace("˛", ""));
+            x.forEach(y -> y.replace(" ", ""));
+            data.put(i, x);
+            i++;
+        }
+
+
+        reader.close();
+
+        return data;
+    }
+
 
 }
