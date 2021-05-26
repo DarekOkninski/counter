@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,20 +73,22 @@ public class ExcelMenager {
         Map<Integer, List<String>> data = new HashMap<>();
         String read = "";
         ArrayList<String> x;
+        ArrayList<String> y;
         int i = 0;
         reader.readLine();
         while((read = reader.readLine())!=null){
 
             x = new ArrayList<>(Arrays.asList(read.split(";")));
-            x.forEach(y -> y.replace("˛", ""));
-            x.forEach(y -> y.replace(" ", ""));
-            data.put(i, x);
+            y = new ArrayList<>();
+            for(int j= 0 ; j<x.size(); j++){
+                y.add(x.get(j).replace(" ", "").replace("�", ""));
+            }
+
+            data.put(i, y);
             i++;
         }
 
-
         reader.close();
-
         return data;
     }
 
