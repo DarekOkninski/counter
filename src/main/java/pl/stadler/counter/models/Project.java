@@ -28,27 +28,22 @@ public class Project {
 
     private String changeProject;
 
-    private Integer numberVehicles;
 
-    private Integer descriptionColumnNumber;
-    private Integer nameCableColumnNumber;
-    private Integer potentialColumnNumber;
-    private Integer strangColumnNumber;
-    private Integer positionFromColumnNumber;
-    private Integer pinFromColumnNumber;
-    private Integer positionToColumnNumber;
-    private Integer pinToColumnNumber;
-    private Integer meshColumnNumber;
-    private Integer gelifertColumnNumber;
-    private Integer colorColumnNumber;
-    private Integer przekrojZylyColumnNumber;
-    private Integer type1ColumnNumber;
-    private Integer type2ColumnNumber;
-    private Integer lengthKableColumnNumber;
+
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "project")
     private Set<KabelList> kabelListSet;
+    @JsonIgnore
+    @OneToMany(mappedBy = "project")
+    private Set<KabelListSettings> kabelListSettingsSet;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "project")
+    private Set<AparatList> aparatListSet;
+    @JsonIgnore
+    @OneToMany(mappedBy = "project")
+    private Set<AparatListSettings> aparatListSettingsSet;
 
 }

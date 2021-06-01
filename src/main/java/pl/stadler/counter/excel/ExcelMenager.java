@@ -1,13 +1,13 @@
 package pl.stadler.counter.excel;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @Component
 public class ExcelMenager {
 
-    public Map<Integer, List<String>> readWorksheet(String fileLocation) throws IOException {
+    public Map<Integer, List<String>> readWorksheet(String fileLocation, String sheetName) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(fileLocation);
         Workbook workbook = new XSSFWorkbook(fileInputStream);
 
@@ -29,7 +29,7 @@ public class ExcelMenager {
         // szukaj odpowiedniej zakładki
         int numberOfSheet = -1;
         for (int j = 0; j < amountSheets; j++) {
-            if (workbook.getSheetName(j).toUpperCase().contains("KABELLISTE")) {
+            if (workbook.getSheetName(j).toUpperCase().contains(sheetName.toUpperCase())) {
 
                 Sheet sheet = workbook.getSheetAt(j);
                 // pobranie nazw arkuszów
@@ -91,6 +91,5 @@ public class ExcelMenager {
         reader.close();
         return data;
     }
-
 
 }

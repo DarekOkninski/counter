@@ -24,6 +24,9 @@ public class IsolationsCableService {
     public IsolationsCable findByTypeIsolationsAndPrzekrojWew(String typeIsolations, String przekrojWew) {
         return isolationsCableRepository.findByTypeIsolationsAndPrzekrojWew(typeIsolations, przekrojWew).orElse(null);
     }
+    public IsolationsCable findByTypeIsolations(String typeIsolations) {
+        return isolationsCableRepository.findByTypeIsolations(typeIsolations).orElse(null);
+    }
     public IsolationsCable save(IsolationsCable isolationsCable){
         return isolationsCableRepository.save(isolationsCable);
     }

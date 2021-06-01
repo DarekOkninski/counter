@@ -1,5 +1,6 @@
 package pl.stadler.counter.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class KabelList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @ManyToOne
     private Project project;
@@ -46,8 +48,6 @@ public class KabelList {
 
     private String przekrojZyly;
 
-//    @ManyToOne
-//    private ClipLibra type1;
     private String type1;
 
     private String type2;
@@ -56,3 +56,4 @@ public class KabelList {
 
 
 }
+    //
