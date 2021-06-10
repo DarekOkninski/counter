@@ -43,18 +43,29 @@ public class KabelListController {
         return kabelListService.mesh();
     }
 
+    @GetMapping(path = "/groupE3")
+    public List<Object[]> groupE3() {
+        return kabelListService.groupE3();
+    }
+
 
     @GetMapping(path = "/add-kabelList")
-    public void addKabelList() throws IOException {
-        //String address = "C://Users//okndar//Desktop//L-4423.xlsx";
-        String address = "C://Users//okndar//Desktop//L-4444_GESAMTKABELLISTE.csv";
-        kabelListService.addKabelList(address, "L-4444");
+    public void addKabelListE3() throws IOException {
+        String address = "C://Users//okndar//Desktop//L-4400_Kabelliste.xlsx";
+        //String address = "C://Users//okndar//Desktop//L-4473_GESAMTKABELLISTE.csv";
+        kabelListService.addKabelList(address, "L-4400");
     }
+//
+//    //@PostMapping(path = "/find-mesh")
+//    public List<KabelList> findAllByStrangAndPositionFromAndPositionTo(String strang, String positionFrom, String positionTo) {
+//        return kabelListService.findAllByStrangAndPositionFromAndPositionTo(strang, positionFrom, positionTo);
+//    }
+//
+//   // @PostMapping(path = "/find-mesh-E3")
+//    public List<KabelList> findAllByPositionFromAndPinFromAndPositionToAndPinTo(String positionFrom, String pinFrom, String positionTo, String pinTo) {
+//        return kabelListService.findAllByPositionFromAndPinFromAndPositionToAndPinTo(positionFrom, pinFrom, positionTo, pinTo);
+//    }
 
-    @PostMapping(path = "/find-mesh")
-    public List<KabelList> findAllByStrangAndPositionFromAndPositionTo(String strang, String positionFrom, String positionTo) {
-        return kabelListService.findAllByStrangAndPositionFromAndPositionTo(strang, positionFrom, positionTo);
-    }
 
 
 }

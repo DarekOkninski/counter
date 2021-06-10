@@ -26,9 +26,9 @@ public class ProjectService {
         return projectRepository.findById(id).orElse(null);
     }
 
-    public Project findByNumberProjectAndChangeProject(String numberProject, String changeProject){
-        return projectRepository.findByNumberProjectAndChangeProject(numberProject, changeProject).orElse(null);
-    }
+//    public Project findByNumberProjectAndChangeProject(String numberProject, String changeProject){
+//        return projectRepository.findByNumberProjectAndChangeProject(numberProject, changeProject).orElse(null);
+//    }
     public Project findByNumberProject(String numberProject){
         return projectRepository.findByNumberProject(numberProject).orElse(null);
     }

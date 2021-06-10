@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ProjectRepository   extends JpaRepository<Project, Long> {
 
     List<Project> findAllByOrderByNumberProjectAsc();
-    Optional<Project> findByNumberProjectAndChangeProject(String numberProject, String changeProject);
+    //Optional<Project> findByNumberProjectAndChangeProject(String numberProject, String changeProject);
     Optional<Project> findByNumberProject(String numberProject);
     Optional<Project> findById(Long id);
 

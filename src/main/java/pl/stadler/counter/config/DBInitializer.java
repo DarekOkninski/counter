@@ -106,8 +106,8 @@ public class DBInitializer {
                     Mesh mesh = Mesh.builder()
                             .color(value.get(0))
                             .name(value.get(1))
-                            .minSize(value.get(2))
-                            .maxSize(value.get(3))
+                            .minSize(Integer.parseInt(value.get(2)))
+                            .maxSize(Integer.parseInt(value.get(3)))
                             .numberProducer(value.get(4))
                             .build();
                     meshService.save(mesh);

@@ -54,6 +54,27 @@ public class KabelList {
 
     private String lengthKable;
 
-
+    @Override
+    public String toString() {
+        return "KabelList{" +
+                "id=" + id +
+                ", project=" + project.getNumberProject() +
+                ", description='" + description + '\'' +
+                ", nameCable='" + nameCable + '\'' +
+                ", potential='" + potential + '\'' +
+                ", strang='" + strang + '\'' +
+                ", positionFrom='" + positionFrom + '\'' +
+                ", pinFrom='" + pinFrom + '\'' +
+                ", positionTo='" + positionTo + '\'' +
+                ", pinTo='" + pinTo + '\'' +
+                ", mesh='" + mesh + '\'' +
+                ", gelifert='" + gelifert + '\'' +
+                ", color='" + color + '\'' +
+                ", przekrojZyly='" + przekrojZyly + '\'' +
+                ", type1='" + type1 + '\'' +
+                ", type2='" + type2 + '\'' +
+                ", lengthKable='" + lengthKable + '\'' +
+                '}';
+    }
 }
     //

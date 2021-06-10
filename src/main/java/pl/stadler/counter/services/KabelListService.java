@@ -36,13 +36,21 @@ public class KabelListService {
     public List<KabelList> findAllByStrangAndPositionFromAndPositionTo(String strang, String positionFrom, String positionTo){
         return kabelListRepository.findAllByStrangAndPositionFromAndPositionTo(strang, positionFrom, positionTo);
     }
+    public List<KabelList> findAllByPositionFromAndPinFromAndPositionToAndPinTo(String positionFrom, String pinFrom, String positionTo, String pinTo){
+        return kabelListRepository.findAllByPositionFromAndPinFromAndPositionToAndPinTo(positionFrom, pinFrom, positionTo, pinTo);
+    }
     public List<Object[]> mesh(){
         return kabelListRepository.mesh();
     }
 
+    public List<Object[]> groupE3(){
+        return kabelListRepository.groupE3();
+    }
     public KabelList save(KabelList kabelList){
         return kabelListRepository.save(kabelList);
     }
+
+
 
     public void addKabelList(String address, String projectNumber) throws IOException {
 
@@ -54,28 +62,39 @@ public class KabelListService {
         if(address.contains("csv")){
             map = excelMenager.getMapFromCSV(address);
         }else{
-            map = excelMenager.readWorksheet(address, "KABELLISTE");
+            if(projectService.findByNumberProject(projectNumber).getTyp().equals("E3")){
+                map = excelMenager.readWorksheetE3(address, "KABELLISTE");
+            }else{
+                map = excelMenager.readWorksheet(address, "KABELLISTE");
+            }
+
         }
         map.forEach((key, value) -> {
-            KabelList kabelList = KabelList.builder()
-                    .project(projectService.findByNumberProject(projectNumber))
-                    .description(value.get(kabelListSettings.getDescriptionColumnNumber()))
-                    .nameCable(value.get(kabelListSettings.getNameCableColumnNumber()))
-                    .potential(value.get(kabelListSettings.getPotentialColumnNumber()))
-                    .strang(value.get(kabelListSettings.getStrangColumnNumber()))
-                    .positionFrom(value.get(kabelListSettings.getPositionFromColumnNumber()))
-                    .pinFrom(value.get(kabelListSettings.getPinFromColumnNumber()))
-                    .positionTo(value.get(kabelListSettings.getPositionToColumnNumber()))
-                    .pinTo(value.get(kabelListSettings.getPinToColumnNumber()))
-                    .mesh(value.get(kabelListSettings.getMeshColumnNumber()))
-                    .gelifert(value.get(kabelListSettings.getGelifertColumnNumber()))
-                    .color(value.get(kabelListSettings.getColorColumnNumber()))
-                    .przekrojZyly(value.get(kabelListSettings.getPrzekrojZylyColumnNumber()))
-                    .type1(value.get(kabelListSettings.getType1ColumnNumber()))
-                    .type2(value.get(kabelListSettings.getType2ColumnNumber()))
-                    .lengthKable(value.get(kabelListSettings.getLengthKableColumnNumber()))
-                    .build();
-            save(kabelList);
+            if(!value.isEmpty() && value.size() > 17){
+
+                KabelList kabelList = KabelList.builder()
+                        .project(projectService.findByNumberProject(projectNumber))
+                        .description(value.get(kabelListSettings.getDescriptionColumnNumber()))
+                        .nameCable(value.get(kabelListSettings.getNameCableColumnNumber()))
+                        .potential(value.get(kabelListSettings.getPotentialColumnNumber()))
+                        .strang(value.get(kabelListSettings.getStrangColumnNumber()))
+                        .positionFrom(value.get(kabelListSettings.getPositionFromColumnNumber()))
+                        .pinFrom(value.get(kabelListSettings.getPinFromColumnNumber()))
+                        .positionTo(value.get(kabelListSettings.getPositionToColumnNumber()))
+                        .pinTo(value.get(kabelListSettings.getPinToColumnNumber()))
+                        .mesh(value.get(kabelListSettings.getMeshColumnNumber()))
+                        .gelifert(value.get(kabelListSettings.getGelifertColumnNumber()))
+                        .color(value.get(kabelListSettings.getColorColumnNumber()))
+                        .przekrojZyly(value.get(kabelListSettings.getPrzekrojZylyColumnNumber()))
+                        .type1(value.get(kabelListSettings.getType1ColumnNumber()))
+                        .type2(value.get(kabelListSettings.getType2ColumnNumber()))
+                        .lengthKable(value.get(kabelListSettings.getLengthKableColumnNumber()))
+                        .build();
+                save(kabelList);
+            }else if (!value.isEmpty()){
+                System.out.println(value);
+            }
+
         });
     }
 

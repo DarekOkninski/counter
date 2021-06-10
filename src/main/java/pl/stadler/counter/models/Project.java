@@ -26,7 +26,7 @@ public class Project {
 
     private String name;
 
-    private String changeProject;
+    private String typ;
 
 
 

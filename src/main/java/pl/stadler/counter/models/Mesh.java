@@ -22,9 +22,9 @@ public class Mesh {
 
     private String name;
 
-    private String minSize;
+    private Integer minSize;
 
-    private String  maxSize;
+    private Integer maxSize;
 
     private String numberProducer;
 

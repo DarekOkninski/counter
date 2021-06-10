@@ -39,14 +39,16 @@ public class MeshController {
     }
 
 
-//    @GetMapping(path = "/strang-map")
-//    public Map<String, List<KabelList>> strangMap(){
-//
-//        return meshService.strangMap();
-//    }
     @GetMapping(path = "/group-map")
-    public List<Object[]> groupMap() throws IOException {
+    public Map<Mesh, Float> groupMap() throws IOException {
         String userName = System.getProperty("user.name");
         return meshService.groupMap("C://Users//" +userName+ "//Desktop//strangGroup.csv");
+    }
+
+
+    @GetMapping(path = "/group-map-E3")
+    public Map<Mesh, Float> groupMapE3() throws IOException {
+        String userName = System.getProperty("user.name");
+        return meshService.groupMapE3("C://Users//" +userName+ "//Desktop//groupExceptionE3.csv");
     }
 }
