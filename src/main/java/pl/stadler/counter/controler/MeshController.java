@@ -38,14 +38,14 @@ public class MeshController {
         return meshService.save(mesh);
     }
 
-
+// ruplan dziala
     @GetMapping(path = "/group-map")
     public Map<Mesh, Float> groupMap() throws IOException {
         String userName = System.getProperty("user.name");
         return meshService.groupMap("C://Users//" +userName+ "//Desktop//strangGroup.csv");
     }
 
-
+///w trakcie
     @GetMapping(path = "/group-map-E3")
     public Map<Mesh, Float> groupMapE3() throws IOException {
         String userName = System.getProperty("user.name");

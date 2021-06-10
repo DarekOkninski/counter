@@ -48,7 +48,7 @@ public class KabelListController {
         return kabelListService.groupE3();
     }
 
-
+//działa e3 ruplan
     @GetMapping(path = "/add-kabelList")
     public void addKabelListE3() throws IOException {
         String address = "C://Users//okndar//Desktop//L-4400_Kabelliste.xlsx";
