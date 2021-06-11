@@ -48,11 +48,11 @@ public class KabelListController {
         return kabelListService.groupE3();
     }
 
-//działa e3 ruplan
+//działa e3 na xmlx i ruplan xmlx oraz csv
     @GetMapping(path = "/add-kabelList")
     public void addKabelListE3() throws IOException {
         String address = "C://Users//okndar//Desktop//L-4400_Kabelliste.xlsx";
-        //String address = "C://Users//okndar//Desktop//L-4473_GESAMTKABELLISTE.csv";
+        //String address = "C://Users//okndar//Desktop//L-4444_GESAMTKABELLISTE.csv";
         kabelListService.addKabelList(address, "L-4400");
     }
 //

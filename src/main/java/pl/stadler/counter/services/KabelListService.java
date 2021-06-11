@@ -60,15 +60,28 @@ public class KabelListService {
 
 
         if(address.contains("csv")){
-            map = excelMenager.getMapFromCSV(address);
+
+//            if(projectService.findByNumberProject(projectNumber).getTyp().equals("E3")){
+//                //tylko ruplan
+//                System.out.println("csv e3");
+//
+//                //map = excelMenager.getMapFromCSV(address);
+//            }else{
+
+                map = excelMenager.getMapFromCSV(address);
+//            }
         }else{
-            if(projectService.findByNumberProject(projectNumber).getTyp().equals("E3")){
+//            System.out.println("xlmx");
+//            if(projectService.findByNumberProject(projectNumber).getTyp().equals("E3")){
+//                System.out.println("xlmx e3");
                 map = excelMenager.readWorksheetE3(address, "KABELLISTE");
-            }else{
-                map = excelMenager.readWorksheet(address, "KABELLISTE");
-            }
+//            }else{
+//                System.out.println("xlmx ruplan");
+//                map = excelMenager.readWorksheet(address, "KABELLISTE");
+//            }
 
         }
+
         map.forEach((key, value) -> {
             if(!value.isEmpty() && value.size() > 17){
 

@@ -24,4 +24,6 @@ public class IsolationsCable {
 
     private String przekrojZew;
 
+    private boolean multiWire;
+
 }

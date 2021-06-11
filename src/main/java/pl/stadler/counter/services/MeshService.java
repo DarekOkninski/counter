@@ -47,7 +47,7 @@ public class MeshService {
         return meshRepository.save(mesh);
     }
 
-
+//Tworzenie grup i uzystanie wyniku
     public Map<Mesh, Float> groupMap(String fileLocation) throws IOException {
         Map<Mesh, Float> finalScore = new HashMap<>();
 
@@ -55,11 +55,13 @@ public class MeshService {
         List<Object[]> data = kabelListService.mesh();
 
         Map<Integer, List<String>> mapExceptions  = excelMenager.getMapFromCSV(fileLocation);
+        //tworzenie listy siatek i przypisanym zapotrzebowaniem
         for(var Mesh : this.findAll()){
             finalScore.put(Mesh, 0.0F);
         }
         int count = 0;
         List<List<String>> pom = new ArrayList<>();
+    //wtorzenie grup z wczytanego pliku z wyjatkami
         for(Map.Entry<Integer, List<String>> x : mapExceptions.entrySet()) {
             if(x.getValue().isEmpty()){
                 groupExpection.put(count, pom);
@@ -76,10 +78,11 @@ public class MeshService {
 
         int i = 0;
 
-
+//Przechodzenie po kazdej grupie
         for (Object[] x : data) {
-
+       // odrzucenie strangów z koncówka 99 poniewaz sa to połączenia intern których nie liczymy
             if (!x[0].toString().endsWith("99")) {
+                //ustawienie flagi czy grupa wystepuje juz w wyjatkach
                 boolean flag =true;
                 for(Map.Entry<Integer, List<List<String>>> k : groupExpection.entrySet()) {
                     for (List<String> j :k.getValue()){
@@ -90,26 +93,30 @@ public class MeshService {
                 }
                 List<KabelList> mesh = kabelListService.findAllByStrangAndPositionFromAndPositionTo(x[0].toString(), x[1].toString(), x[2].toString());
 
-
+                //Zliczanie rozmiaru grupy przewodów jezeli nie wystepuje w wyjatkach
                 if(!countsCrossSection(mesh).isEmpty() && flag){
 
                     List<String> score = countsCrossSection(mesh);
 
                     float val = finalScore.get(findByNumberProducer(score.get(0)));
-
+                    //dodanie wyniku do zapotrzebowania odpowiedniej siatki
                     finalScore.replace(findByNumberProducer(score.get(0)), val + Float.parseFloat(score.get(1)));
                 }
             }
         }
+
         for(Map.Entry<Integer, List<List<String>>> k : groupExpection.entrySet()) {
             List<KabelList> mesh = new ArrayList<>();
+            // Laczenie grup z wyjatków
             for (List<String> j :k.getValue()){
                 List<KabelList> meshTmp = kabelListService.findAllByStrangAndPositionFromAndPositionTo(j.get(0), j.get(1), j.get(2));
                 mesh.addAll(meshTmp);
             }
+            //Zliczanie rozmiaru grupy przewodów z wyjatków
             if(!countsCrossSection(mesh).isEmpty()){
                 List<String> score = countsCrossSection(mesh);
                 float val = finalScore.get(findByNumberProducer(score.get(0)));
+                //dodanie wyniku do zapotrzebowania odpowiedniej siatki
                 finalScore.replace(findByNumberProducer(score.get(0)), val + Float.parseFloat(score.get(1)));
             }
         }
@@ -129,7 +136,7 @@ public class MeshService {
         String color = "Black";
         List<String> score = new ArrayList<>();
 
-
+// Sprawdzenie czy jest w grupie przewód gkw i nie jest on wielożyłowy
         float maxLength = 0.0F;
         for(int i = 0; i <group.size(); i++){
             if (group.get(i).getType1().contains("GKW") && (!group.get(i).getType2().contains("x"))){
@@ -141,11 +148,12 @@ public class MeshService {
             for(int i = 0; i <group.size(); i++){
 
                     Boolean orTypeCable = false;
-
+        //sprawdzenie czy siatka powinna byc czarna czy szara
                     if(group.get(i).getMesh().contains("Hauptstrom")){
                         color = "Gray";
                     }
                     for(int j = 0; j < isolationsCable.size(); j++){
+                        //sprawdzenie czy ten typ przewodu mamy w bazie
                         if(( group.get(i).getType1().trim().equals(isolationsCable.get(j).getTypeIsolations()) ) && ( group.get(i).getType2().contains(isolationsCable.get(j).getPrzekrojWew()) )){
                             orTypeCable = true;
                             if(group.get(i).getLengthKable().contains(",")){
@@ -154,7 +162,7 @@ public class MeshService {
                             if( NumberUtils.isParsable(group.get(i).getLengthKable()) && maxLength < Float.parseFloat(group.get(i).getLengthKable())){
                                 maxLength = Float.parseFloat(group.get(i).getLengthKable());
                             }
-
+                            //jezeli jest to przewód wielozyłowy to dadajemy do do mapy inaczej obliczamy
                             if(!group.get(i).getType1().contains("GKW")){
                                     numberW.put(group.get(i).getNameCable(), isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getType2()));
                             }else{
@@ -162,15 +170,18 @@ public class MeshService {
                             }
                         }
                     }
+                  //  jezeli niemamy tego typu to dodajemy do listy
                     if(!orTypeCable){
                         missingCable.put(group.get(i).getType1(), group.get(i).getType2());
                     }
             }
+            //obliczanie pola przewodu z izolacja
             for(IsolationsCable k : numberW.values()){
 
                 sum += Float.parseFloat(k.getPrzekrojZew()) * Float.parseFloat(k.getPrzekrojZew());
             }
             double wynik = Math.sqrt(sum);
+            //dobranie siatki i czy taka istnieje w bazie
             if(findMesh((int) Math.round(wynik) , color) != null){
                 score.add(findMesh((int) Math.round(wynik), color).getNumberProducer());
                 score.add(maxLength+"");
@@ -179,7 +190,7 @@ public class MeshService {
             }
 
 
-
+//wyswietlenie brakujacych przewodów
             missingCable.forEach((key, value) -> {
                 System.out.println(key + "  " + value);
             });
@@ -192,14 +203,18 @@ public class MeshService {
     }
 
 
-    public Map<Mesh, Float> groupMapE3(String fileLocation) throws IOException {
+    public Map<Mesh, Float> groupMapE3(String GroupExpection, String MultiWireExpection) throws IOException {
         List<Object[]> data = kabelListService.groupE3();
         Map<Mesh, Float> finalScore = new HashMap<>();
-        Map<Integer, List<String>> mapExceptions  = excelMenager.getMapFromCSV(fileLocation);
+        Map<Integer, List<String>> mapExceptions  = excelMenager.getMapFromCSV(GroupExpection);
         Map<Integer, List<List<String>>> groupExpection = new HashMap<>();
+        Map<Integer, List<String>> multiWireExpection = excelMenager.getMapFromCSV(MultiWireExpection);
+
+        //tworzenie listy siatek i przypisanym zapotrzebowaniem
         for(var Mesh : this.findAll()){
             finalScore.put(Mesh, 0.0F);
         }
+        //wtorzenie grup z wczytanego pliku z wyjatkami
         int count = 0;
         List<List<String>> pom = new ArrayList<>();
         for(Map.Entry<Integer, List<String>> x : mapExceptions.entrySet()) {
@@ -213,7 +228,18 @@ public class MeshService {
         }
         groupExpection.put(count, pom);
 
+
         for (Object[] x : data) {
+            List<String> multiWire = new ArrayList<>();
+            for(Map.Entry<Integer, List<String>> j : multiWireExpection.entrySet()) {
+               //System.out.println(j.getValue().get(0) + " --- " + x[0].toString() + " " + j.getValue().get(1) + " --- " + x[1].toString() + " " + j.getValue().get(2) + " --- " + x[2].toString() + " " + j.getValue().get(3) + " --- " + x[3].toString());
+                if(j.getValue().get(0).equals(x[0].toString()) && j.getValue().get(1).equals(x[1].toString()) && j.getValue().get(2).equals(x[2].toString()) && j.getValue().get(3).equals(x[3].toString())) {
+                    for(int i = 4 ;i<j.getValue().size(); i++){
+                        multiWire.add(j.getValue().get(i));
+                   }
+
+                }
+            }
 
             boolean flag =true;
             for(Map.Entry<Integer, List<List<String>>> k : groupExpection.entrySet()) {
@@ -223,32 +249,149 @@ public class MeshService {
                     }
                 }
             }
-            System.out.println(x[0].toString() + " --- " + x[1].toString() + " --- " + x[2].toString() + " --- " + x[3].toString());
+
             List<KabelList> mesh = kabelListService.findAllByPositionFromAndPinFromAndPositionToAndPinTo(x[0].toString(), x[1].toString(), x[2].toString(), x[3].toString());
 
-            for (KabelList kabelList : mesh) {
-               System.out.println(kabelList.toString());
+//            for (KabelList kabelList : mesh) {
+//               System.out.println(kabelList.toString());
+//
+//            }
 
+            if(!countsCrossSection(mesh, multiWire).isEmpty() && flag){
+
+                List<String> score = countsCrossSection(mesh, multiWire);
+
+                if(!score.isEmpty()){
+                    float val = finalScore.get(findByNumberProducer(score.get(0)));
+
+                    finalScore.replace(findByNumberProducer(score.get(0)), val + Float.parseFloat(score.get(1)));
+                }
             }
-            if(!countsCrossSection(mesh).isEmpty() && flag){
+        }
 
-                List<String> score = countsCrossSection(mesh);
+        for(Map.Entry<Integer, List<List<String>>> k : groupExpection.entrySet()) {
+            List<String> multiWire = new ArrayList<>();
 
+            List<KabelList> mesh = new ArrayList<>();
+            // Laczenie grup z wyjatków
+            for (List<String> j :k.getValue()){
+                List<KabelList> meshTmp = kabelListService.findAllByPositionFromAndPinFromAndPositionToAndPinTo(j.get(0), j.get(1), j.get(2),j.get(3));
+
+
+                for(Map.Entry<Integer, List<String>> x : multiWireExpection.entrySet()) {
+                    //System.out.println(j.getValue().get(0) + " --- " + x[0].toString() + " " + j.getValue().get(1) + " --- " + x[1].toString() + " " + j.getValue().get(2) + " --- " + x[2].toString() + " " + j.getValue().get(3) + " --- " + x[3].toString());
+                    if(x.getValue().get(0).equals(j.get(0)) && x.getValue().get(1).equals(j.get(1)) && x.getValue().get(2).equals(j.get(2)) && x.getValue().get(3).equals(j.get(3))) {
+                        for(int i = 4 ;i<x.getValue().size(); i++){
+                            multiWire.add(x.getValue().get(i));
+                        }
+
+                    }
+                }
+
+
+                mesh.addAll(meshTmp);
+            }
+            //Zliczanie rozmiaru grupy przewodów z wyjatków
+            if(!countsCrossSection(mesh, multiWire).isEmpty()){
+                List<String> score = countsCrossSection(mesh, multiWire);
                 float val = finalScore.get(findByNumberProducer(score.get(0)));
-
+                //dodanie wyniku do zapotrzebowania odpowiedniej siatki
                 finalScore.replace(findByNumberProducer(score.get(0)), val + Float.parseFloat(score.get(1)));
             }
         }
 
-
+        finalScore.forEach((key, value) -> System.out.println(key.getName() + "  --  " + key.getNumberProducer() + "  --  " + value));
 
         return finalScore;
     }
 
-//    RADOX 3 GKW 600V
-//    RADOX TENUIS-TW 600V M
-//    RADOX 4 GKW-AX 1800V M
-//    RADOX 3 GKW 600V FR
+
+    public List<String> countsCrossSection(List<KabelList> group, List<String> multiWire){
+        boolean orMesh = false;
+        List<IsolationsCable> isolationsCable = isolationsCableService.findAll();
+        Map<String, IsolationsCable> numberW = new HashMap<>();
+        Map<String, String> missingCable = new HashMap<>();
+
+        String color = "Black";
+        List<String> score = new ArrayList<>();
+
+// Sprawdzenie czy jest to przewod jednozyłowy
+        float maxLength = 0.0F;
+        for(int i = 0; i <group.size(); i++){
+
+            if (isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getPrzekrojZyly()) != null ){
+                if(!isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getPrzekrojZyly()).isMultiWire()){
+                    orMesh = true;
+                }
+            }else{
+                missingCable.put(group.get(i).getType1(), group.get(i).getPrzekrojZyly());
+            }
+        };
+        //System.out.println(orMesh + " ----- or mesh");
+        if(orMesh){
+            float sum = 0;
+            for(int i = 0; i <group.size(); i++){
+
+                Boolean orTypeCable = false;
+                //sprawdzenie czy siatka powinna byc czarna czy szara
+                if(group.get(i).getMesh().contains("Hauptstrom")){
+                    color = "Gray";
+                }
+               // System.out.println(color + " ----- color");
+                for(int j = 0; j < isolationsCable.size(); j++){
+                    //sprawdzenie czy ten typ przewodu mamy w bazie
+                    if(( group.get(i).getType1().trim().equals(isolationsCable.get(j).getTypeIsolations()) ) && ( group.get(i).getPrzekrojZyly().contains(isolationsCable.get(j).getPrzekrojWew()) )){
+                        orTypeCable = true;
+                        if(group.get(i).getLengthKable().contains(",")){
+                            group.get(i).setLengthKable(group.get(i).getLengthKable().replace(",","."));
+                        }
+                        if( NumberUtils.isParsable(group.get(i).getLengthKable()) && maxLength < Float.parseFloat(group.get(i).getLengthKable())){
+                            maxLength = Float.parseFloat(group.get(i).getLengthKable());
+                        }
+                        //jezeli jest to przewód wielozyłowy to dadajemy do do mapy inaczej obliczamy
+                        if(isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getPrzekrojZyly()).isMultiWire()){
+                            for(String name : multiWire){
+                                if(name.equals(group.get(i).getType1())){
+                                    numberW.put(group.get(i).getNameCable(), isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getType2()));
+                                }
+                            }
+
+                        }else{
+                            sum +=  Float.parseFloat(isolationsCable.get(j).getPrzekrojZew()) * Float.parseFloat(isolationsCable.get(j).getPrzekrojZew());
+                            //System.out.println(isolationsCable.get(j).getPrzekrojWew());
+                        }
+                    }
+                }
+                //  jezeli niemamy tego typu to dodajemy do listy
+                if(!orTypeCable){
+                    missingCable.put(group.get(i).getType1(), group.get(i).getType2());
+                }
+            }
+            //obliczanie pola przewodu z izolacja
+            for(IsolationsCable k : numberW.values()){
+
+                sum += Float.parseFloat(k.getPrzekrojZew()) * Float.parseFloat(k.getPrzekrojZew());
+            }
+            double wynik = Math.sqrt(sum);
+            //dobranie siatki i czy taka istnieje w bazie
+            if(findMesh((int) Math.round(wynik) , color) != null){
+                score.add(findMesh((int) Math.round(wynik), color).getNumberProducer());
+                score.add(maxLength+"");
+               // System.out.println(maxLength);
+            }else{
+                System.out.println("Nie dobrano siatki z bazy do średnicy" + (int) Math.round(wynik) + " oraz koloru " + color );
+            }
 
 
+
+            //System.out.println("koniec");
+
+        }
+
+//wyswietlenie brakujacych przewodów
+//        missingCable.forEach((key, value) -> {
+//            System.out.println(key + "  " + value);
+//        });
+        return score;
+    }
 }

@@ -49,6 +49,6 @@ public class MeshController {
     @GetMapping(path = "/group-map-E3")
     public Map<Mesh, Float> groupMapE3() throws IOException {
         String userName = System.getProperty("user.name");
-        return meshService.groupMapE3("C://Users//" +userName+ "//Desktop//groupExceptionE3.csv");
+        return meshService.groupMapE3("C://Users//" +userName+ "//Desktop//groupExceptionE3.csv", "C://Users//" +userName+ "//Desktop//multiWireException.csv");
     }
 }
