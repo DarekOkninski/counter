@@ -21,8 +21,14 @@ public class AparatListSettings {
     private Project project;
 
     private Integer positionColumnNumber;
+    private Integer areaColumnNumber;
     private Integer countColumnNumber;
+    private Integer functionColumnNumber;
+    private Integer typColumnNumber;
+    private Integer descriptionColumnNumber;
     private Integer numberProducerColumnNumber;
     private Integer nameProducerColumnNumber;
+    private Integer schemaColumnNumber;
+    private Integer stadlerNrColumnNumber;
 
 }

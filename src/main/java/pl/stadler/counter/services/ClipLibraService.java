@@ -39,7 +39,7 @@ public class ClipLibraService {
 
 
    // @EventListener(ApplicationReadyEvent.class)
-    public void clipLibraCounter(){
+    public Map<String, Integer> clipLibraCounter(){
         List<KabelList> kabelLists= kabelListRepository.findAll();
         Map<String, Integer> clipCounter = new HashMap<>();
         List<ClipLibra> nameClip = findAll();
@@ -53,7 +53,7 @@ public class ClipLibraService {
             }
         });
 
-        clipCounter.forEach((key, value)-> System.out.println(key +" -- " + value));
+        return clipCounter;
 
     }
 

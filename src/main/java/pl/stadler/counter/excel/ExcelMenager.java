@@ -51,7 +51,12 @@ public class ExcelMenager {
                                 }
                                 break;
                             case FORMULA:
-                                data.get(i).add(String.valueOf((int) cell.getNumericCellValue()));
+                                try {
+                                    data.get(i).add(String.valueOf((int) cell.getNumericCellValue()));
+                                }catch(Exception e){
+                                    data.get(i).add(cell.getRichStringCellValue().getString().replace(" ", ""));
+                                }
+
                                 break;
                             default:
                                 data.get(i).add(" ");
@@ -126,7 +131,11 @@ public class ExcelMenager {
                                     }
                                     break;
                                 case FORMULA:
-                                    data.get(i).add(String.valueOf((int) cell.getNumericCellValue()));
+                                    try {
+                                        data.get(i).add(String.valueOf((int) cell.getNumericCellValue()));
+                                    }catch(Exception e){
+                                        data.get(i).add(cell.getRichStringCellValue().getString().replace(" ", ""));
+                                    }
                                     break;
                                 default:
                                     data.get(i).add(" ");

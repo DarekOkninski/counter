@@ -10,6 +10,7 @@ import pl.stadler.counter.repositories.ClipLibraRepository;
 import pl.stadler.counter.services.ClipLibraService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/clip")
@@ -34,4 +35,7 @@ public class ClipLibraController {
     public ClipLibra save(ClipLibra clipLibra){
         return clipLibraService.save(clipLibra);
     }
+
+    @GetMapping(path= "/counter")
+    public Map<String, Integer> clipLibraCounter(){ return clipLibraService.clipLibraCounter();}
 }

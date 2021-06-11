@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/aparat-list")
+@RequestMapping(path = "/aparatlist")
 public class AparatListController {
     private final AparatListService aparatListService;
 
@@ -36,11 +36,11 @@ public class AparatListController {
         return aparatListService.findAllByNameProducer(nameProducer);
     }
 
-    @GetMapping(path = "/add")
+    @GetMapping(path = "/add-aparatlist")
     public void addKabelList() throws IOException {
-        //String address = "C://Users//okndar//Desktop//L-4423.xlsx";
-        String address = "C://Users//okndar//Desktop//L-4444_Apparateliste.xlsx";
-        aparatListService.addAparatList(address, "L-4444");
+        String address = "C://Users//okndar//Desktop//L-4400_Apparateliste.xlsx";
+        //String address = "C://Users//okndar//Desktop//L-4444_Apparateliste.xlsx";
+        aparatListService.addAparatList(address, "L-4400");
     }
 
 }

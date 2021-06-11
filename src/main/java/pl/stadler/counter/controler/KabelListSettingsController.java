@@ -33,4 +33,6 @@ public class KabelListSettingsController {
     public KabelListSettings save(KabelListSettings kabelListSettings){
         return kabelListSettingsService.save(kabelListSettings);
     }
+
+
 }

@@ -25,4 +25,5 @@ public class AparatListSettingsService {
         return aparatListSettingsRepository.save(aparatListSettings);
     }
 
+
 }

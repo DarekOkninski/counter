@@ -22,9 +22,16 @@ public class AparatList {
     private Project project;
 
     private String position;
+    private String area;
     private String count;
+    private String function;
+    private String typ;
+    private String description;
     private String numberProducer;
     private String nameProducer;
+    private String schema;
+    private String stadlerNr;
+
 
 
 

@@ -52,7 +52,9 @@ public class AparatListService {
         if(address.contains("csv")){
             map = excelMenager.getMapFromCSV(address);
         }else if(address.contains("xlsx")){
-            map = excelMenager.readWorksheet(address, "APPARATELISTE");
+            map = excelMenager.readWorksheet(address, "APPARATE");
+
+
 
         }
 
@@ -61,9 +63,15 @@ public class AparatListService {
             AparatList aparatList = AparatList.builder()
                     .project(projectService.findByNumberProject(projectNumber))
                     .position(value.get(aparatListSettings.getPositionColumnNumber()))
+                    .area(value.get(aparatListSettings.getAreaColumnNumber()))
                     .count(value.get(aparatListSettings.getCountColumnNumber()))
+                    .function(value.get(aparatListSettings.getFunctionColumnNumber()))
+                    .typ(value.get(aparatListSettings.getTypColumnNumber()))
+                    .description(value.get(aparatListSettings.getDescriptionColumnNumber()))
                     .numberProducer(value.get(aparatListSettings.getNumberProducerColumnNumber()))
                     .nameProducer(value.get(aparatListSettings.getNameProducerColumnNumber()))
+                    .schema(value.get(aparatListSettings.getSchemaColumnNumber()))
+                    .stadlerNr(value.get(aparatListSettings.getStadlerNrColumnNumber()))
                     .build();
             save(aparatList);
         });

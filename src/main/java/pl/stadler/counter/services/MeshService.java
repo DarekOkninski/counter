@@ -232,13 +232,18 @@ public class MeshService {
         for (Object[] x : data) {
             List<String> multiWire = new ArrayList<>();
             for(Map.Entry<Integer, List<String>> j : multiWireExpection.entrySet()) {
-               //System.out.println(j.getValue().get(0) + " --- " + x[0].toString() + " " + j.getValue().get(1) + " --- " + x[1].toString() + " " + j.getValue().get(2) + " --- " + x[2].toString() + " " + j.getValue().get(3) + " --- " + x[3].toString());
-                if(j.getValue().get(0).equals(x[0].toString()) && j.getValue().get(1).equals(x[1].toString()) && j.getValue().get(2).equals(x[2].toString()) && j.getValue().get(3).equals(x[3].toString())) {
-                    for(int i = 4 ;i<j.getValue().size(); i++){
-                        multiWire.add(j.getValue().get(i));
-                   }
+                if(j.getValue().size()!= 0){
+                    //System.out.println(j.getValue().get(0) + " -- " + j.getValue().get(1) + " -- " + j.getValue().get(2) + " -- "+ j.getValue().get(3) );
+                    if(j.getValue().get(0).equals(x[0].toString()) && j.getValue().get(1).equals(x[1].toString()) && j.getValue().get(2).equals(x[2].toString()) && j.getValue().get(3).equals(x[3].toString())) {
 
+
+                        for(int i = 4; i < j.getValue().size(); i++){
+                            System.out.println("fdfs");
+                            multiWire.add(j.getValue().get(i));
+                        }
+                    }
                 }
+
             }
 
             boolean flag =true;
@@ -252,10 +257,7 @@ public class MeshService {
 
             List<KabelList> mesh = kabelListService.findAllByPositionFromAndPinFromAndPositionToAndPinTo(x[0].toString(), x[1].toString(), x[2].toString(), x[3].toString());
 
-//            for (KabelList kabelList : mesh) {
-//               System.out.println(kabelList.toString());
-//
-//            }
+
 
             if(!countsCrossSection(mesh, multiWire).isEmpty() && flag){
 
@@ -342,17 +344,22 @@ public class MeshService {
                     //sprawdzenie czy ten typ przewodu mamy w bazie
                     if(( group.get(i).getType1().trim().equals(isolationsCable.get(j).getTypeIsolations()) ) && ( group.get(i).getPrzekrojZyly().contains(isolationsCable.get(j).getPrzekrojWew()) )){
                         orTypeCable = true;
+
                         if(group.get(i).getLengthKable().contains(",")){
                             group.get(i).setLengthKable(group.get(i).getLengthKable().replace(",","."));
                         }
                         if( NumberUtils.isParsable(group.get(i).getLengthKable()) && maxLength < Float.parseFloat(group.get(i).getLengthKable())){
                             maxLength = Float.parseFloat(group.get(i).getLengthKable());
                         }
-                        //jezeli jest to przewód wielozyłowy to dadajemy do do mapy inaczej obliczamy
+                        //jezeli jest to przewód wielozyłowy to dadajemy go do mapy inaczej obliczamy
+//                        System.out.println(group.get(i).getType1() + " -- " + group.get(i).getPrzekrojZyly() +  " ---------" + isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getPrzekrojZyly()).isMultiWire());
                         if(isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getPrzekrojZyly()).isMultiWire()){
+                            System.out.println(multiWire);
                             for(String name : multiWire){
-                                if(name.equals(group.get(i).getType1())){
-                                    numberW.put(group.get(i).getNameCable(), isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getType2()));
+
+                                if(name.equals(group.get(i).getNameCable())){
+
+                                    numberW.put(name, isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getPrzekrojZyly()));
                                 }
                             }
 
@@ -364,7 +371,7 @@ public class MeshService {
                 }
                 //  jezeli niemamy tego typu to dodajemy do listy
                 if(!orTypeCable){
-                    missingCable.put(group.get(i).getType1(), group.get(i).getType2());
+                    missingCable.put(group.get(i).getType1(), group.get(i).getPrzekrojZyly());
                 }
             }
             //obliczanie pola przewodu z izolacja
