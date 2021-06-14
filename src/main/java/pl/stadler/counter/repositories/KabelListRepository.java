@@ -21,7 +21,7 @@ public interface KabelListRepository  extends JpaRepository<KabelList, Long> {
     @Query("SELECT strang, positionFrom, positionTo FROM KabelList group by strang, positionFrom, positionTo")
     public List<Object[]> mesh();
 
-    @Query("SELECT  positionFrom, pinFrom, positionTo, pinTo FROM KabelList where positionFrom not like positionTo and positionFrom not like '' and positionTo  not like '' and pinFrom not like '%sh%' and pinTo  not like '%sh%' group by positionFrom, pinFrom, positionTo, pinTo")
+    @Query("SELECT positionFrom, pinFrom, positionTo, pinTo FROM KabelList where positionFrom not like positionTo and positionFrom not like '' and positionTo  not like '' and pinFrom not like '%sh%' and pinTo  not like '%sh%' group by positionFrom, pinFrom, positionTo, pinTo")
     public List<Object[]> groupE3();
 
 

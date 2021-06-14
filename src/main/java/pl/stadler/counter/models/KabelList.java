@@ -29,7 +29,6 @@ public class KabelList {
 
     private String potential;
 
-
     private String strang;
 
     private String positionFrom;
@@ -57,8 +56,6 @@ public class KabelList {
     @Override
     public String toString() {
         return "KabelList{" +
-                "id=" + id +
-                ", project=" + project.getNumberProject() +
                 ", description='" + description + '\'' +
                 ", nameCable='" + nameCable + '\'' +
                 ", potential='" + potential + '\'' +

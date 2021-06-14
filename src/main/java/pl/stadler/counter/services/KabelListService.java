@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.stadler.counter.excel.ExcelMenager;
 import pl.stadler.counter.models.KabelList;
 import pl.stadler.counter.models.KabelListSettings;
+import pl.stadler.counter.models.ProjectSettings;
 import pl.stadler.counter.repositories.KabelListRepository;
 
 import java.io.IOException;
@@ -52,14 +53,13 @@ public class KabelListService {
 
 
 
-    public void addKabelList(String address, String projectNumber) throws IOException {
+    public void addKabelList(ProjectSettings projectSettings) throws IOException {
 
         kabelListRepository.deleteAll();
         Map<Integer, List<String>> map;
-        KabelListSettings kabelListSettings = kabelListSettingsService.findByProjectNumberProject(projectNumber);
+        KabelListSettings kabelListSettings = kabelListSettingsService.findByProjectNumberProject(projectSettings.getProjectNumber());
 
-
-        if(address.contains("csv")){
+        if(projectSettings.getKabelListPath().contains("csv")){
 
 //            if(projectService.findByNumberProject(projectNumber).getTyp().equals("E3")){
 //                //tylko ruplan
@@ -68,13 +68,13 @@ public class KabelListService {
 //                //map = excelMenager.getMapFromCSV(address);
 //            }else{
 
-                map = excelMenager.getMapFromCSV(address);
+                map = excelMenager.getMapFromCSV(projectSettings.getKabelListPath());
 //            }
         }else{
 //            System.out.println("xlmx");
 //            if(projectService.findByNumberProject(projectNumber).getTyp().equals("E3")){
 //                System.out.println("xlmx e3");
-                map = excelMenager.readWorksheetE3(address, "KABELLISTE");
+                map = excelMenager.readWorksheetE3(projectSettings.getKabelListPath(), "KABELLISTE");
 //            }else{
 //                System.out.println("xlmx ruplan");
 //                map = excelMenager.readWorksheet(address, "KABELLISTE");
@@ -86,8 +86,8 @@ public class KabelListService {
             if(!value.isEmpty() && value.size() > 17){
 
                 KabelList kabelList = KabelList.builder()
-                        .project(projectService.findByNumberProject(projectNumber))
-                        .description(value.get(kabelListSettings.getDescriptionColumnNumber()))
+                        .project(projectService.findByNumberProject(projectSettings.getProjectNumber()))
+//                        .description(value.get(kabelListSettings.getDescriptionColumnNumber()))
                         .nameCable(value.get(kabelListSettings.getNameCableColumnNumber()))
                         .potential(value.get(kabelListSettings.getPotentialColumnNumber()))
                         .strang(value.get(kabelListSettings.getStrangColumnNumber()))

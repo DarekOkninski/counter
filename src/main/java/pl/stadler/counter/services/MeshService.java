@@ -56,8 +56,8 @@ public class MeshService {
 
         Map<Integer, List<String>> mapExceptions  = excelMenager.getMapFromCSV(fileLocation);
         //tworzenie listy siatek i przypisanym zapotrzebowaniem
-        for(var Mesh : this.findAll()){
-            finalScore.put(Mesh, 0.0F);
+        for(Mesh mesh: this.findAll()){
+            finalScore.put(mesh, 0.0F);
         }
         int count = 0;
         List<List<String>> pom = new ArrayList<>();
@@ -159,7 +159,7 @@ public class MeshService {
                             if(group.get(i).getLengthKable().contains(",")){
                                 group.get(i).setLengthKable(group.get(i).getLengthKable().replace(",","."));
                             }
-                            if( NumberUtils.isParsable(group.get(i).getLengthKable()) && maxLength < Float.parseFloat(group.get(i).getLengthKable())){
+                            if(NumberUtils.isParsable(group.get(i).getLengthKable()) && maxLength < Float.parseFloat(group.get(i).getLengthKable())){
                                 maxLength = Float.parseFloat(group.get(i).getLengthKable());
                             }
                             //jezeli jest to przewód wielozyłowy to dadajemy do do mapy inaczej obliczamy
@@ -211,8 +211,8 @@ public class MeshService {
         Map<Integer, List<String>> multiWireExpection = excelMenager.getMapFromCSV(MultiWireExpection);
 
         //tworzenie listy siatek i przypisanym zapotrzebowaniem
-        for(var Mesh : this.findAll()){
-            finalScore.put(Mesh, 0.0F);
+        for(Mesh mesh: this.findAll()){
+            finalScore.put(mesh, 0.0F);
         }
         //wtorzenie grup z wczytanego pliku z wyjatkami
         int count = 0;

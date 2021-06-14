@@ -24,6 +24,7 @@ public class ProjectController {
 
     @GetMapping("/show")
     public List<Project> findAll() {
+//        System.out.println(projectService.findAll());
         return projectService.findAll();
     }
 

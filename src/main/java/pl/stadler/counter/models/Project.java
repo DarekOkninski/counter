@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.h2.util.IntArray;
+//import org.h2.util.IntArray;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -27,9 +27,6 @@ public class Project {
     private String name;
 
     private String typ;
-
-
-
 
 
     @JsonIgnore

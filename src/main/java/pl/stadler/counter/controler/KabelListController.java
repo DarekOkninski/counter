@@ -1,11 +1,12 @@
 package pl.stadler.counter.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.EventListener;
+import org.springframework.web.bind.annotation.*;
 import pl.stadler.counter.models.KabelList;
+import pl.stadler.counter.models.ProjectSettings;
 import pl.stadler.counter.services.KabelListService;
 
 import java.io.IOException;
@@ -20,7 +21,6 @@ public class KabelListController {
     @Autowired
     public KabelListController(KabelListService kabelListService) {
         this.kabelListService = kabelListService;
-
     }
 
 
@@ -38,6 +38,7 @@ public class KabelListController {
     public KabelList save(KabelList kabelList) {
         return kabelListService.save(kabelList);
     }
+
     @GetMapping(path = "/mesh")
     public List<Object[]> mesh() {
         return kabelListService.mesh();
@@ -48,12 +49,17 @@ public class KabelListController {
         return kabelListService.groupE3();
     }
 
-//działa e3 na xmlx i ruplan xmlx oraz csv
-    @GetMapping(path = "/add-kabelList")
-    public void addKabelListE3() throws IOException {
-        String address = "C://Users//okndar//Desktop//L-4400_Kabelliste.xlsx";
+    //działa e3 na xmlx i ruplan xmlx oraz csv
+    @PostMapping(path = "/add-kabelList")
+    public ProjectSettings addKabelListE3(@RequestBody ProjectSettings projectSettings) throws IOException {
+//        String address = "C://Users//szyluk//Desktop//L-4400_Kabelliste.xlsx";
         //String address = "C://Users//okndar//Desktop//L-4444_GESAMTKABELLISTE.csv";
-        kabelListService.addKabelList(address, "L-4400");
+        try {
+            kabelListService.addKabelList(projectSettings);
+        } catch (Exception e){
+            return null;
+        }
+        return projectSettings;
     }
 //
 //    //@PostMapping(path = "/find-mesh")
@@ -67,5 +73,10 @@ public class KabelListController {
 //    }
 
 
+    @EventListener(ApplicationReadyEvent.class)
+    public void aaa() throws IOException {
+        ProjectSettings projectSettings = new ProjectSettings("L-4400", "C:\\Users\\szyluk\\Desktop\\L-4400_Kabelliste.xlsx");
+        kabelListService.addKabelList(projectSettings);
+    }
 
 }
