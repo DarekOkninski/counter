@@ -35,11 +35,23 @@ public class DBInitializer {
     private KabelListSettingsService kabelListSettingsService;
     @Autowired
     private ProjectService projectService;
-
+    @Autowired
+    private  GripService gripService;
 
     @Bean
     InitializingBean init() {
         return () -> {
+            if (gripService.findAll().isEmpty()) {
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//grip.xlsx" ,"Sheet1");
+                map.forEach((key, value) -> {
+                    Grip grip = Grip.builder()
+                            .numberGrip(value.get(0))
+                            .build();
+
+
+                    gripService.save(grip);
+                });
+            }
             if (kabelListSettingsService.findAll().isEmpty()) {
                 KabelListSettings kabelListSettings = KabelListSettings.builder()
                         .project(projectService.findByNumberProject("L-4444"))
@@ -64,14 +76,14 @@ public class DBInitializer {
             }
 
             if (clipLibraService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//libra.xlsx" ,"KABELLISTE");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//libra.xlsx" ,"Sheet1");
                 map.forEach((key, value) -> {
                     ClipLibra clipLibra = ClipLibra.builder()
-                            .nameClip(value.get(0))
-                            .typCable(value.get(1))
+                            .clipNumberStadlerID(value.get(0))
+                            .clipNumberProducer(value.get(1))
                             .diameterClip(value.get(2))
-                            .clipNumber(value.get(3))
-                            .diameterCable(value.get(4))
+                            .diameterClipMin(Float.parseFloat(value.get(3)))
+                            .diameterClipMax(Float.parseFloat(value.get(4)))
                             .build();
                     clipLibraService.save(clipLibra);
                 });
@@ -93,7 +105,8 @@ public class DBInitializer {
                     IsolationsCable cable = IsolationsCable.builder()
                             .typeIsolations(value.get(0))
                             .przekrojWew(value.get(1))
-                            .przekrojZew(value.get(2))
+                            .srednicaWew(Float.valueOf(value.get(2)))
+                            .przekrojZew(value.get(3))
                             .build();
 
 //

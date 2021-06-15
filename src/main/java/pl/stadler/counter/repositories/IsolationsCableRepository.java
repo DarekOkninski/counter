@@ -12,6 +12,6 @@ public interface IsolationsCableRepository extends JpaRepository<IsolationsCable
 
     public List<IsolationsCable> findAll();
     public Optional<IsolationsCable> findByTypeIsolationsAndPrzekrojWew(String typeIsolations, String przekrojWew);
-    public Optional<IsolationsCable> findByTypeIsolations(String typeIsolations);
+    public IsolationsCable findByTypeIsolations(String typeIsolations);
 
 }

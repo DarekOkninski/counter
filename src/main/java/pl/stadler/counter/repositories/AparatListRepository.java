@@ -7,6 +7,7 @@ import pl.stadler.counter.models.KabelList;
 import pl.stadler.counter.models.KabelListSettings;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AparatListRepository  extends JpaRepository<AparatList, Long> {

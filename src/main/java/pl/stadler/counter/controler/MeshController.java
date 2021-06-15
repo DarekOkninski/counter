@@ -1,10 +1,7 @@
 package pl.stadler.counter.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.stadler.counter.models.KabelList;
 import pl.stadler.counter.models.Mesh;
 import pl.stadler.counter.services.MeshService;
@@ -38,17 +35,10 @@ public class MeshController {
         return meshService.save(mesh);
     }
 
-// ruplan dziala
-    @GetMapping(path = "/group-map")
-    public Map<Mesh, Float> groupMap() throws IOException {
-        String userName = System.getProperty("user.name");
-        return meshService.groupMap("C://Users//" +userName+ "//Desktop//strangGroup.csv");
+//  Działa i dla ruplana i dla E3
+    @GetMapping(path = "/group-map/{projectNumber}")
+    public Map<Mesh, Float> groupMap(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
+        return meshService.groupMap(projectNumber);
     }
 
-///w trakcie
-    @GetMapping(path = "/group-map-E3")
-    public Map<Mesh, Float> groupMapE3() throws IOException {
-        String userName = System.getProperty("user.name");
-        return meshService.groupMapE3("C://Users//" +userName+ "//Desktop//groupExceptionE3.csv", "C://Users//" +userName+ "//Desktop//multiWireException.csv");
-    }
 }

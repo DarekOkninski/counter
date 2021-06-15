@@ -19,13 +19,15 @@ public class MeshService {
     private final KabelListService kabelListService;
     private final ExcelMenager excelMenager;
     private final IsolationsCableService isolationsCableService;
+    private final ProjectService projectService;
 
     @Autowired
-    public MeshService(MeshRepository meshRepository, KabelListService kabelListService, ExcelMenager excelMenager, IsolationsCableService isolationsCableService) {
+    public MeshService(MeshRepository meshRepository, KabelListService kabelListService, ExcelMenager excelMenager, IsolationsCableService isolationsCableService, ProjectService projectService) {
         this.meshRepository = meshRepository;
         this.kabelListService = kabelListService;
         this.excelMenager = excelMenager;
         this.isolationsCableService = isolationsCableService;
+        this.projectService = projectService;
     }
 
     public List<Mesh> findAll() {
@@ -47,13 +49,21 @@ public class MeshService {
         return meshRepository.save(mesh);
     }
 
+
+    public Map<Mesh, Float> groupMap(String projectNumber) throws IOException {
+        if(projectService.findByNumberProject(projectNumber).getTyp().equals("E3")){
+            return groupMapE3();
+        }else{
+            return groupMapRuplan();
+        }
+    }
 //Tworzenie grup i uzystanie wyniku
-    public Map<Mesh, Float> groupMap(String fileLocation) throws IOException {
+    public Map<Mesh, Float> groupMapRuplan() throws IOException {
         Map<Mesh, Float> finalScore = new HashMap<>();
 
         Map<Integer, List<List<String>>> groupExpection = new HashMap<>();
         List<Object[]> data = kabelListService.mesh();
-
+        String fileLocation = "L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//do uzupelnienia//groupExceptionRuplan.csv";
         Map<Integer, List<String>> mapExceptions  = excelMenager.getMapFromCSV(fileLocation);
         //tworzenie listy siatek i przypisanym zapotrzebowaniem
         for(var Mesh : this.findAll()){
@@ -203,9 +213,12 @@ public class MeshService {
     }
 
 
-    public Map<Mesh, Float> groupMapE3(String GroupExpection, String MultiWireExpection) throws IOException {
+    public Map<Mesh, Float> groupMapE3() throws IOException {
         List<Object[]> data = kabelListService.groupE3();
         Map<Mesh, Float> finalScore = new HashMap<>();
+        String GroupExpection = "L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//do uzupelnienia//groupExceptionE3.csv";
+        String MultiWireExpection = "L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//do uzupelnienia//multiWireExceptionE3.csv";
+
         Map<Integer, List<String>> mapExceptions  = excelMenager.getMapFromCSV(GroupExpection);
         Map<Integer, List<List<String>>> groupExpection = new HashMap<>();
         Map<Integer, List<String>> multiWireExpection = excelMenager.getMapFromCSV(MultiWireExpection);

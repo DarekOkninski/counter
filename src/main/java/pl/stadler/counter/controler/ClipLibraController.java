@@ -27,10 +27,7 @@ public class ClipLibraController {
         return clipLibraService.findAll();
     }
 
-    @GetMapping(path = "/find-by-number")
-    public ClipLibra findByNumberHarting(String nameClip) {
-        return clipLibraService.findByNameClip(nameClip);
-    }
+
     @PostMapping(path = "/save")
     public ClipLibra save(ClipLibra clipLibra){
         return clipLibraService.save(clipLibra);

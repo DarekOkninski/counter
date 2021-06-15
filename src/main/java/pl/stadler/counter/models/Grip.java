@@ -1,30 +1,25 @@
 package pl.stadler.counter.models;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IsolationsCable {
+public class Grip {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String typeIsolations;
-
-    private String przekrojWew;
-
-    private Float srednicaWew;
-    private String przekrojZew;
-
-    private boolean multiWire;
-
+    private String numberGrip;
 }

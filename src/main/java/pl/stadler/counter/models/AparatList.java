@@ -33,9 +33,20 @@ public class AparatList {
     private String stadlerNr;
 
 
-
-
-
-
-
+    @Override
+    public String toString() {
+        return "AparatList{" +
+                ", project=" + project.getNumberProject() +
+                ", position='" + position + '\'' +
+                ", area='" + area + '\'' +
+                ", count='" + count + '\'' +
+                ", function='" + function + '\'' +
+                ", typ='" + typ + '\'' +
+                ", description='" + description + '\'' +
+                ", numberProducer='" + numberProducer + '\'' +
+                ", nameProducer='" + nameProducer + '\'' +
+                ", schema='" + schema + '\'' +
+                ", stadlerNr='" + stadlerNr + '\'' +
+                '}';
+    }
 }
