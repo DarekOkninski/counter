@@ -76,7 +76,7 @@ public class DBInitializer {
             }
 
             if (clipLibraService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//libra.xlsx" ,"Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//libra.xlsx" ,"Sheet1");
                 map.forEach((key, value) -> {
                     ClipLibra clipLibra = ClipLibra.builder()
                             .clipNumberStadlerID(value.get(0))
@@ -90,7 +90,7 @@ public class DBInitializer {
 
             }
             if (distancesService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//distances.xlsx", "KABELLISTE");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//distances.xlsx", "KABELLISTE");
                 map.forEach((key, value) -> {
                     Distances distances =Distances.builder()
                             .numberHarting(value.get(0))
@@ -99,7 +99,7 @@ public class DBInitializer {
                 });
             }
             if (isolationsCableService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//isolationsCable.xlsx" ,"KABELLISTE" );
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//isolationsCable.xlsx" ,"KABELLISTE" );
                 map.forEach((key, value) -> {
 
                     IsolationsCable cable = IsolationsCable.builder()
@@ -114,7 +114,7 @@ public class DBInitializer {
                 });
             }
             if (meshService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//mesh.xlsx","KABELLISTE" );
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//mesh.xlsx","KABELLISTE" );
                 map.forEach((key, value) -> {
                     Mesh mesh = Mesh.builder()
                             .color(value.get(0))
