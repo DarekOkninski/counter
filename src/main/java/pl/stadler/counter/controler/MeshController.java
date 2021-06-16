@@ -1,15 +1,18 @@
 package pl.stadler.counter.controler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.stadler.counter.models.KabelList;
 import pl.stadler.counter.models.Mesh;
+import pl.stadler.counter.models.MeshWrapper;
+import pl.stadler.counter.models.Project;
 import pl.stadler.counter.services.MeshService;
 
+import javax.websocket.server.PathParam;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,25 +33,31 @@ public class MeshController {
     }
 
     @GetMapping(path = "/find-by-color-min-max")
-    public Mesh findByColorMinMax(String color, String min, String max ) {
+    public Mesh findByColorMinMax(String color, String min, String max) {
         return meshService.findByColorMinMax(color, min, max);
     }
+
     @PostMapping(path = "/save")
-    public Mesh save(Mesh mesh){
+    public Mesh save(Mesh mesh) {
         return meshService.save(mesh);
     }
 
-// ruplan dziala
-    @GetMapping(path = "/group-map")
-    public Map<Mesh, Float> groupMap() throws IOException {
+    // e3
+    @PostMapping(path = "/group-map-E3/")
+   public List<MeshWrapper> groupMap(@RequestBody Project project) throws IOException {
         String userName = System.getProperty("user.name");
-        return meshService.groupMap("C://Users//" +userName+ "//Desktop//strangGroup.csv");
-    }
+        Map<Mesh, Float> m = meshService.groupMap(project.getNumberProject());
 
-///w trakcie
-    @GetMapping(path = "/group-map-E3")
-    public Map<Mesh, Float> groupMapE3() throws IOException {
-        String userName = System.getProperty("user.name");
-        return meshService.groupMapE3("C://Users//" +userName+ "//Desktop//groupExceptionE3.csv", "C://Users//" +userName+ "//Desktop//multiWireException.csv");
+        List<MeshWrapper> meshWrapperList = new ArrayList<>();
+
+        m.forEach((k,v) -> {
+            MeshWrapper meshWrapper = MeshWrapper.builder()
+                    .mesh(k)
+                    .amount(v)
+                    .build();
+            meshWrapperList.add(meshWrapper);
+        });
+
+        return meshWrapperList;
     }
 }

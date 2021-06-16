@@ -19,13 +19,15 @@ public class MeshService {
     private final KabelListService kabelListService;
     private final ExcelMenager excelMenager;
     private final IsolationsCableService isolationsCableService;
+    private final ProjectService projectService;
 
     @Autowired
-    public MeshService(MeshRepository meshRepository, KabelListService kabelListService, ExcelMenager excelMenager, IsolationsCableService isolationsCableService) {
+    public MeshService(MeshRepository meshRepository, KabelListService kabelListService, ExcelMenager excelMenager, IsolationsCableService isolationsCableService, ProjectService projectService) {
         this.meshRepository = meshRepository;
         this.kabelListService = kabelListService;
         this.excelMenager = excelMenager;
         this.isolationsCableService = isolationsCableService;
+        this.projectService = projectService;
     }
 
     public List<Mesh> findAll() {
@@ -122,7 +124,7 @@ public class MeshService {
         }
 
 
-        finalScore.forEach((key, value) -> System.out.println(key.getName() + "  --  " + key.getNumberProducer() + "  --  " + value));
+//        finalScore.forEach((key, value) -> System.out.println(key.getName() + "  --  " + key.getNumberProducer() + "  --  " + value));
 
         return finalScore;
     }
@@ -191,9 +193,9 @@ public class MeshService {
 
 
 //wyswietlenie brakujacych przewodów
-            missingCable.forEach((key, value) -> {
-                System.out.println(key + "  " + value);
-            });
+//            missingCable.forEach((key, value) -> {
+//                System.out.println(key + "  " + value);
+//            });
 
 
         }
