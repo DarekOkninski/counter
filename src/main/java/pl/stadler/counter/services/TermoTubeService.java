@@ -94,7 +94,7 @@ public class TermoTubeService {
             if(isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelListRepository.findAllByNameCable(key).get(0).getType1(), kabelListRepository.findAllByNameCable(key).get(0).getType2()) ==null){
                 if(kabelListRepository.findAllByNameCable(key).get(0).getType2().toUpperCase().contains("SH") && kabelListRepository.findAllByNameCable(key).size() > 1){
                     if(isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelListRepository.findAllByNameCable(key).get(1).getType1(), kabelListRepository.findAllByNameCable(key).get(1).getType2()) ==null){
-                        System.out.println("Brak przewodu typu: "+ kabelListRepository.findAllByNameCable(key).get(0).getType1()  + " o przekroju żyły: "+  kabelListRepository.findAllByNameCable(key).get(1).getType2());
+                        System.out.println("Brak przewodu typu: "+ kabelListRepository.findAllByNameCable(key).get(1).getType1()  + " o przekroju żyły: "+  kabelListRepository.findAllByNameCable(key).get(1).getType2());
                     }else{
                         String x = isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelListRepository.findAllByNameCable(key).get(1).getType1(), kabelListRepository.findAllByNameCable(key).get(1).getType2()).getPrzekrojZew();
                         if (findBySize(Float.parseFloat(x), "Czarna") != null) {

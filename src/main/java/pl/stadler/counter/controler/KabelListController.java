@@ -56,11 +56,11 @@ public class KabelListController {
 
     }
 // Test
-    @EventListener(ApplicationReadyEvent.class)
-    public void aaa() throws IOException {
-        ProjectSettings projectSettings = new ProjectSettings("L-4400", "C:\\Users\\okndar\\Desktop\\L-4400_Kabelliste.xlsx");
-        kabelListService.addKabelList(projectSettings);
-    }
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void aaa() throws IOException {
+//        ProjectSettings projectSettings = new ProjectSettings("L-4400", "C:\\Users\\okndar\\Desktop\\L-4400_Kabelliste.xlsx");
+//        kabelListService.addKabelList(projectSettings);
+//    }
 
 
 }
