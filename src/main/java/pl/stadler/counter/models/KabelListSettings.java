@@ -27,8 +27,10 @@ public class KabelListSettings {
     private Integer nameCableColumnNumber;
     private Integer potentialColumnNumber;
     private Integer strangColumnNumber;
+    private Integer areaFromColumnNumber;
     private Integer positionFromColumnNumber;
     private Integer pinFromColumnNumber;
+    private Integer areaToColumnNumber;
     private Integer positionToColumnNumber;
     private Integer pinToColumnNumber;
     private Integer meshColumnNumber;

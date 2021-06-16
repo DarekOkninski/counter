@@ -37,12 +37,14 @@ public class DBInitializer {
     private ProjectService projectService;
     @Autowired
     private  GripService gripService;
+    @Autowired
+    private  TermoTubeService termoTubeService;
 
     @Bean
     InitializingBean init() {
         return () -> {
             if (gripService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("C://Users//"+userName+"//Desktop//counter//databaseExcel//grip.xlsx" ,"Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//grip.xlsx" ,"Sheet1");
                 map.forEach((key, value) -> {
                     Grip grip = Grip.builder()
                             .numberGrip(value.get(0))
@@ -52,6 +54,23 @@ public class DBInitializer {
                     gripService.save(grip);
                 });
             }
+            if (termoTubeService.findAll().isEmpty()) {
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//termoTube.xlsx" ,"Sheet1");
+                map.forEach((key, value) -> {
+                    TermoTube termoTube = TermoTube.builder()
+                            .name(value.get(0))
+                            .numberStadlerID(value.get(1))
+                            .numberProducer(value.get(2))
+                            .sizeMax(Float.parseFloat(value.get(3)))
+                            .sizeMin(Float.parseFloat(value.get(4)))
+                            .color(value.get(5))
+                            .type(value.get(6))
+                            .build();
+
+
+                    termoTubeService.save(termoTube);
+                });
+            }
             if (kabelListSettingsService.findAll().isEmpty()) {
                 KabelListSettings kabelListSettings = KabelListSettings.builder()
                         .project(projectService.findByNumberProject("L-4444"))
@@ -59,8 +78,10 @@ public class DBInitializer {
                         .nameCableColumnNumber(2)
                         .potentialColumnNumber(3)
                         .strangColumnNumber(4)
+                        .areaFromColumnNumber(5)
                         .positionFromColumnNumber(7)
                         .pinFromColumnNumber(9)
+                        .areaToColumnNumber(10)
                         .positionToColumnNumber(12)
                         .pinToColumnNumber(14)
                         .meshColumnNumber(15)
@@ -73,10 +94,33 @@ public class DBInitializer {
                         .build();
 
                 kabelListSettingsService.save(kabelListSettings);
+
+                KabelListSettings kabelListSettings2 = KabelListSettings.builder()
+                        .project(projectService.findByNumberProject("L-4400"))
+                        .descriptionColumnNumber(29)
+                        .nameCableColumnNumber(0)
+                        .potentialColumnNumber(1)
+                        .strangColumnNumber(2)
+                        .areaFromColumnNumber(5)
+                        .positionFromColumnNumber(6)
+                        .pinFromColumnNumber(7)
+                        .areaToColumnNumber(12)
+                        .positionToColumnNumber(13)
+                        .pinToColumnNumber(14)
+                        .meshColumnNumber(18)
+                        .gelifertColumnNumber(21)
+                        .colorColumnNumber(19)
+                        .przekrojZylyColumnNumber(20)
+                        .type1ColumnNumber(21)
+                        .type2ColumnNumber(20)
+                        .lengthKableColumnNumber(22)
+                        .build();
+
+                kabelListSettingsService.save(kabelListSettings2);
             }
 
             if (clipLibraService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//libra.xlsx" ,"Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//libra.xlsx" ,"Sheet1");
                 map.forEach((key, value) -> {
                     ClipLibra clipLibra = ClipLibra.builder()
                             .clipNumberStadlerID(value.get(0))
@@ -90,7 +134,7 @@ public class DBInitializer {
 
             }
             if (distancesService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//distances.xlsx", "KABELLISTE");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//distances.xlsx", "KABELLISTE");
                 map.forEach((key, value) -> {
                     Distances distances =Distances.builder()
                             .numberHarting(value.get(0))
@@ -99,7 +143,7 @@ public class DBInitializer {
                 });
             }
             if (isolationsCableService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//isolationsCable.xlsx" ,"KABELLISTE" );
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//isolationsCable.xlsx" ,"KABELLISTE" );
                 map.forEach((key, value) -> {
 
                     IsolationsCable cable = IsolationsCable.builder()
@@ -114,7 +158,7 @@ public class DBInitializer {
                 });
             }
             if (meshService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//mesh.xlsx","KABELLISTE" );
+                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//mesh.xlsx","KABELLISTE" );
                 map.forEach((key, value) -> {
                     Mesh mesh = Mesh.builder()
                             .color(value.get(0))

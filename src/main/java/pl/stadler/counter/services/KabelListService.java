@@ -34,12 +34,20 @@ public class KabelListService {
     public List<KabelList> findAllByStrang(String strang){
         return kabelListRepository.findAllByStrang(strang);
     }
+    public List<KabelList> findAllByNameCable(String nameCable){
+        return kabelListRepository.findAllByNameCable(nameCable);
+    }
     public List<KabelList> findAllByStrangAndPositionFromAndPositionTo(String strang, String positionFrom, String positionTo){
         return kabelListRepository.findAllByStrangAndPositionFromAndPositionTo(strang, positionFrom, positionTo);
     }
     public List<KabelList> findAllByPositionFromAndPinFromAndPositionToAndPinTo(String positionFrom, String pinFrom, String positionTo, String pinTo){
         return kabelListRepository.findAllByPositionFromAndPinFromAndPositionToAndPinTo(positionFrom, pinFrom, positionTo, pinTo);
     }
+
+    public List<KabelList> findAllByAreaFromAndPositionFromAndAreaToAndPositionTo(String areaFrom, String positionFrom, String areaTo, String positionTo){
+        return kabelListRepository.findAllByPositionFromAndPinFromAndPositionToAndPinTo(areaFrom, positionFrom, areaTo, positionTo);
+    }
+
     public List<Object[]> mesh(){
         return kabelListRepository.mesh();
     }
@@ -86,8 +94,10 @@ public class KabelListService {
                         .nameCable(value.get(kabelListSettings.getNameCableColumnNumber()))
                         .potential(value.get(kabelListSettings.getPotentialColumnNumber()))
                         .strang(value.get(kabelListSettings.getStrangColumnNumber()))
+                        .areaFrom(value.get(kabelListSettings.getAreaFromColumnNumber()))
                         .positionFrom(value.get(kabelListSettings.getPositionFromColumnNumber()))
                         .pinFrom(value.get(kabelListSettings.getPinFromColumnNumber()))
+                        .areaTo(value.get(kabelListSettings.getAreaToColumnNumber()))
                         .positionTo(value.get(kabelListSettings.getPositionToColumnNumber()))
                         .pinTo(value.get(kabelListSettings.getPinToColumnNumber()))
                         .mesh(value.get(kabelListSettings.getMeshColumnNumber()))

@@ -32,9 +32,13 @@ public class KabelList {
 
     private String strang;
 
+    private String areaFrom;
+
     private String positionFrom;
 
     private String pinFrom;
+
+    private String areaTo;
 
     private String positionTo;
 

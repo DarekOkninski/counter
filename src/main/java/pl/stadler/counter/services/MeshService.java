@@ -132,7 +132,7 @@ public class MeshService {
         }
 
 
-        finalScore.forEach((key, value) -> System.out.println(key.getName() + "  --  " + key.getNumberProducer() + "  --  " + value));
+        //finalScore.forEach((key, value) -> System.out.println(key.getName() + "  --  " + key.getNumberProducer() + "  --  " + value));
 
         return finalScore;
     }
@@ -268,7 +268,7 @@ public class MeshService {
                 }
             }
 
-            List<KabelList> mesh = kabelListService.findAllByPositionFromAndPinFromAndPositionToAndPinTo(x[0].toString(), x[1].toString(), x[2].toString(), x[3].toString());
+            List<KabelList> mesh = kabelListService.findAllByAreaFromAndPositionFromAndAreaToAndPositionTo(x[0].toString(), x[1].toString(), x[2].toString(), x[3].toString());
 
 
 
@@ -290,7 +290,7 @@ public class MeshService {
             List<KabelList> mesh = new ArrayList<>();
             // Laczenie grup z wyjatków
             for (List<String> j :k.getValue()){
-                List<KabelList> meshTmp = kabelListService.findAllByPositionFromAndPinFromAndPositionToAndPinTo(j.get(0), j.get(1), j.get(2),j.get(3));
+                List<KabelList> meshTmp = kabelListService.findAllByAreaFromAndPositionFromAndAreaToAndPositionTo(j.get(0), j.get(1), j.get(2),j.get(3));
 
 
                 for(Map.Entry<Integer, List<String>> x : multiWireExpection.entrySet()) {

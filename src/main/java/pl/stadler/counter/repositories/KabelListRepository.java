@@ -14,7 +14,10 @@ public interface KabelListRepository  extends JpaRepository<KabelList, Long> {
 
     public List<KabelList> findAllByStrang(String strang);
 
+    public List<KabelList> findAllByNameCable(String nameCable);
     public List<KabelList> findAllByStrangAndPositionFromAndPositionTo(String strang, String positionFrom, String positionTo);
+
+    public List<KabelList> findAllByAreaFromAndPositionFromAndAreaToAndPositionTo(String areaFrom, String positionFrom, String areaTo, String positionTo);
 
     public List<KabelList> findAllByPositionFromAndPinFromAndPositionToAndPinTo(String positionFrom, String pinFrom, String positionTo, String pinTo);
 
