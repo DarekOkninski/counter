@@ -32,4 +32,13 @@ public class TermoTubeController {
     public Map<TermoTube, Integer> countTermoTubeMultiWire(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
         return termoTubeService.countTermoTubeMultiWire(projectNumber);
     }
+    @GetMapping(path = "/countTermoTubeSH/{projectNumber}")
+    public Map<TermoTube, Integer> countTermoTubeSH(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
+        return termoTubeService.countTermoTubeSH(projectNumber);
+    }
+    @GetMapping(path = "/countTermoTubeBlue/{projectNumber}")
+    public Map<TermoTube, Integer> countTermoTubeBlue(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
+        return termoTubeService.countTermoTubeBlue(projectNumber);
+    }
+
 }

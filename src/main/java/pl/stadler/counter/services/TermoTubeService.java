@@ -1,16 +1,14 @@
 package pl.stadler.counter.services;
 
 import org.springframework.stereotype.Service;
+import pl.stadler.counter.models.IsolationsCable;
 import pl.stadler.counter.models.KabelList;
 import pl.stadler.counter.models.Mesh;
 import pl.stadler.counter.models.TermoTube;
 import pl.stadler.counter.repositories.KabelListRepository;
 import pl.stadler.counter.repositories.TermoTubeRepository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TermoTubeService {
@@ -31,7 +29,6 @@ public class TermoTubeService {
     public List<TermoTube> findAll() {
         return termoTubeRepository.findAll();
     }
-
 
     public TermoTube save(TermoTube termoTube){
         return termoTubeRepository.save(termoTube);
@@ -71,7 +68,7 @@ public class TermoTubeService {
     }
 
     public Map<TermoTube, Integer> groupTermoTubeMultiWireRuplan(){
-        Map<TermoTube, Integer> finalScore = new HashMap<>();
+
         Map<String, Float> groupNrW = new HashMap<>();
 
         List<KabelList> kabelLists= kabelListRepository.findAll();
@@ -117,4 +114,85 @@ public class TermoTubeService {
         return finalScore;
     }
 
+
+
+    public Map<TermoTube, Integer> countTermoTubeSH(String NumberProject){
+        List<KabelList> kabelLists = new ArrayList<>();
+        if(projectService.findByNumberProject(NumberProject).getTyp().equals("E3")){
+            kabelLists= kabelListRepository.findAllByPotencialZeroE3();
+        }else{
+            kabelLists= kabelListRepository.findAllByPotencialZeroRuplan();
+        }
+        Map<TermoTube, Integer> finalScore = new HashMap<>();
+
+
+        for(var TermoTube : this.findAllByColor("Zolta/Zielona")){
+            finalScore.put(TermoTube, 0);
+        }
+
+        for (KabelList kabelList : kabelLists) {
+            if(!kabelList.getPrzekrojZyly().toUpperCase().contains("CU") && !kabelList.getPrzekrojZyly().equals("") && !kabelList.getPrzekrojZyly().toUpperCase().contains("SH")){
+
+                IsolationsCable isolationsCable = isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelList.getType1(), kabelList.getType2());
+                if(isolationsCable != null){
+
+                    TermoTube k = findBySize(Float.parseFloat(isolationsCable.getPrzekrojZew()), "Zolta/Zielona");
+                    if(k != null){
+                        finalScore.put(k, finalScore.get(k) + 10);
+                    }else{
+                        System.out.println("Brak Termokurczki Żółto-zielonej o przekroju : " + isolationsCable.getPrzekrojZew() + " W bazie danych");
+                    }
+                }else{
+                    System.out.println("brak przewodu: " + kabelList.getType1() + " , " + kabelList.getType2() + " W bazie danych");
+                }
+
+
+            }
+        }
+
+
+
+        return finalScore;
+
+
+    }
+
+    public Map<TermoTube, Integer> countTermoTubeBlue(String NumberProject){
+        List<KabelList> kabelLists = new ArrayList<>();
+        Map<TermoTube, Integer> finalScore = new HashMap<>();
+
+        if(projectService.findByNumberProject(NumberProject).getTyp().equals("E3")){
+            kabelLists= kabelListRepository.findAllByTermoTubeBlueE3();
+        }else{
+            kabelLists= kabelListRepository.findAllByTermoTubeBlueRuplan();
+        }
+        for(var TermoTube : this.findAllByColor("Niebieska")){
+            finalScore.put(TermoTube, 0);
+        }
+
+        for (KabelList kabelList : kabelLists) {
+
+            if(!kabelList.getPrzekrojZyly().toUpperCase().contains("CU") && !kabelList.getPrzekrojZyly().equals("") && !kabelList.getPrzekrojZyly().toUpperCase().contains("SH")){
+                IsolationsCable isolationsCable = isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelList.getType1(), kabelList.getType2());
+                if(isolationsCable != null){
+
+                    TermoTube k = findBySize(Float.parseFloat(isolationsCable.getPrzekrojZew()), "Niebieska");
+                    if(k != null){
+                        finalScore.put(k, finalScore.get(k) + 10);
+                    }else{
+                        System.out.println("Brak Termokurczki Niebieskiej o przekroju : " + isolationsCable.getPrzekrojZew() + " W bazie danych");
+                    }
+
+                }else{
+                    System.out.println("brak przewodu: " + kabelList.getType1() + " , " + kabelList.getType2() + " W bazie danych");
+                }
+            }
+        }
+
+
+
+        return finalScore;
+
+
+    }
 }

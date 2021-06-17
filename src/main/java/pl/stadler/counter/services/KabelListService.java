@@ -6,6 +6,7 @@ import pl.stadler.counter.excel.ExcelMenager;
 import pl.stadler.counter.models.KabelList;
 import pl.stadler.counter.models.KabelListSettings;
 import pl.stadler.counter.models.ProjectSettings;
+import pl.stadler.counter.models.TermoTube;
 import pl.stadler.counter.repositories.KabelListRepository;
 
 import java.io.IOException;
@@ -30,6 +31,12 @@ public class KabelListService {
     }
     public List<KabelList> findAll(){
         return kabelListRepository.findAll();
+    }
+    public List<KabelList> findAllByPotencialZeroE3() {
+        return kabelListRepository.findAllByPotencialZeroE3();
+    }
+    public List<KabelList> findAllByPotencialZeroRuplan() {
+        return kabelListRepository.findAllByPotencialZeroRuplan();
     }
     public List<KabelList> findAllByStrang(String strang){
         return kabelListRepository.findAllByStrang(strang);
