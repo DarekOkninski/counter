@@ -66,8 +66,8 @@ public class MeshService {
         String fileLocation = "L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//do uzupelnienia//groupExceptionRuplan.csv";
         Map<Integer, List<String>> mapExceptions  = excelMenager.getMapFromCSV(fileLocation);
         //tworzenie listy siatek i przypisanym zapotrzebowaniem
-        for(var Mesh : this.findAll()){
-            finalScore.put(Mesh, 0.0F);
+        for(Mesh mesh: this.findAll()){
+            finalScore.put(mesh, 0.0F);
         }
         int count = 0;
         List<List<String>> pom = new ArrayList<>();
@@ -91,21 +91,26 @@ public class MeshService {
 //Przechodzenie po kazdej grupie
         for (Object[] x : data) {
        // odrzucenie strangów z koncówka 99 poniewaz sa to połączenia intern których nie liczymy
+//            na tablice nie ma siatek
             if (!x[0].toString().endsWith("99")) {
                 //ustawienie flagi czy grupa wystepuje juz w wyjatkach
                 boolean flag =true;
                 for(Map.Entry<Integer, List<List<String>>> k : groupExpection.entrySet()) {
+                    // porównanie grupy wyjatków i grup
                     for (List<String> j :k.getValue()){
                         if(j.get(0).equals(x[0].toString()) && j.get(1).equals(x[1].toString()) && j.get(2).equals(x[2].toString())) {
                             flag =false;
                         }
                     }
                 }
+
+                // wszystkie połączenia dla danej grupy
                 List<KabelList> mesh = kabelListService.findAllByStrangAndPositionFromAndPositionTo(x[0].toString(), x[1].toString(), x[2].toString());
 
                 //Zliczanie rozmiaru grupy przewodów jezeli nie wystepuje w wyjatkach
                 if(!countsCrossSection(mesh).isEmpty() && flag){
 
+                    // countsCrossSection liczenie siatek dla wybranej grupy
                     List<String> score = countsCrossSection(mesh);
 
                     float val = finalScore.get(findByNumberProducer(score.get(0)));
@@ -131,16 +136,18 @@ public class MeshService {
             }
         }
 
-
         //finalScore.forEach((key, value) -> System.out.println(key.getName() + "  --  " + key.getNumberProducer() + "  --  " + value));
 
         return finalScore;
     }
 
+
     public List<String> countsCrossSection(List<KabelList> group){
         boolean orMesh = false;
         List<IsolationsCable> isolationsCable = isolationsCableService.findAll();
+        // grupowanie przewodów wielozyłowych, aby uniknąć powtórzeń
         Map<String, IsolationsCable> numberW = new HashMap<>();
+        // kable których nie ma w bazie
         Map<String, String> missingCable = new HashMap<>();
 
         String color = "Black";
@@ -149,7 +156,7 @@ public class MeshService {
 // Sprawdzenie czy jest w grupie przewód gkw i nie jest on wielożyłowy
         float maxLength = 0.0F;
         for(int i = 0; i <group.size(); i++){
-            if (group.get(i).getType1().contains("GKW") && (!group.get(i).getType2().contains("x"))){
+            if (group.get(i).getType1().toUpperCase().contains("GKW") && (!group.get(i).getType2().contains("x"))){
                 orMesh = true;
             }
         };
@@ -224,11 +231,13 @@ public class MeshService {
         Map<Integer, List<String>> multiWireExpection = excelMenager.getMapFromCSV(MultiWireExpection);
 
         //tworzenie listy siatek i przypisanym zapotrzebowaniem
-        for(var Mesh : this.findAll()){
-            finalScore.put(Mesh, 0.0F);
+        for(Mesh mesh: this.findAll()){
+            finalScore.put(mesh, 0.0F);
         }
         //wtorzenie grup z wczytanego pliku z wyjatkami
         int count = 0;
+        // list połaczeń w grupieWyjatków
+        //tworzenie jednej grupy do znalezienia pustej linijki. po znalezieniu pustej linijkii tworzy nastepna grupe
         List<List<String>> pom = new ArrayList<>();
         for(Map.Entry<Integer, List<String>> x : mapExceptions.entrySet()) {
             if(x.getValue().isEmpty()){
@@ -239,19 +248,21 @@ public class MeshService {
                 pom.add(x.getValue());
             }
         }
+
         groupExpection.put(count, pom);
 
 
         for (Object[] x : data) {
+            // lista wielożyłowych które ida w siatke
             List<String> multiWire = new ArrayList<>();
             for(Map.Entry<Integer, List<String>> j : multiWireExpection.entrySet()) {
                 if(j.getValue().size()!= 0){
-                    //System.out.println(j.getValue().get(0) + " -- " + j.getValue().get(1) + " -- " + j.getValue().get(2) + " -- "+ j.getValue().get(3) );
+                    //jezeli przewód wielożyłowy znajdzie swoja grupe to jest on dodawany
                     if(j.getValue().get(0).equals(x[0].toString()) && j.getValue().get(1).equals(x[1].toString()) && j.getValue().get(2).equals(x[2].toString()) && j.getValue().get(3).equals(x[3].toString())) {
 
 
                         for(int i = 4; i < j.getValue().size(); i++){
-                            System.out.println("fdfs");
+
                             multiWire.add(j.getValue().get(i));
                         }
                     }
@@ -260,6 +271,7 @@ public class MeshService {
             }
 
             boolean flag =true;
+            //ustawienie flagi czy grupa wystepuje juz w wyjatkach
             for(Map.Entry<Integer, List<List<String>>> k : groupExpection.entrySet()) {
                 for (List<String> j :k.getValue()){
                     if(j.get(0).equals(x[0].toString()) && j.get(1).equals(x[1].toString()) && j.get(2).equals(x[2].toString()) && j.get(3).equals(x[3].toString())) {
@@ -271,7 +283,7 @@ public class MeshService {
             List<KabelList> mesh = kabelListService.findAllByAreaFromAndPositionFromAndAreaToAndPositionTo(x[0].toString(), x[1].toString(), x[2].toString(), x[3].toString());
 
 
-
+            //Zliczanie rozmiaru grupy przewodów jezeli nie wystepuje w wyjatkach
             if(!countsCrossSection(mesh, multiWire).isEmpty() && flag){
 
                 List<String> score = countsCrossSection(mesh, multiWire);
@@ -294,7 +306,7 @@ public class MeshService {
 
 
                 for(Map.Entry<Integer, List<String>> x : multiWireExpection.entrySet()) {
-                    //System.out.println(j.getValue().get(0) + " --- " + x[0].toString() + " " + j.getValue().get(1) + " --- " + x[1].toString() + " " + j.getValue().get(2) + " --- " + x[2].toString() + " " + j.getValue().get(3) + " --- " + x[3].toString());
+                    //jezeli przewód wielożyłowy znajdzie swoja grupe to jest on dodawany
                     if(x.getValue().get(0).equals(j.get(0)) && x.getValue().get(1).equals(j.get(1)) && x.getValue().get(2).equals(j.get(2)) && x.getValue().get(3).equals(j.get(3))) {
                         for(int i = 4 ;i<x.getValue().size(); i++){
                             multiWire.add(x.getValue().get(i));

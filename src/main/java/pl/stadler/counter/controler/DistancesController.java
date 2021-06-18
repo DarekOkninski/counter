@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.stadler.counter.models.Distances;
+import pl.stadler.counter.models.Wrapper;
 import pl.stadler.counter.services.DistancesService;
 
 import java.util.List;
@@ -34,4 +35,7 @@ public class DistancesController {
     public Distances save(Distances distances){
         return distancesService.save(distances);
     }
+
+    @GetMapping(path = "/counter")
+    public List<String> countDistance(){ return  distancesService.countDistance();}
 }

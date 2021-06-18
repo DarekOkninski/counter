@@ -48,26 +48,30 @@ public class ClipLibraService {
 
 
         List<ClipLibra> nameClip = findAll();
-
+//Tworzenie mapy z rodzajami  Clipów i liczka ich zapotrzebowan
        nameClip.forEach(x -> clipCounter.put(x.getClipNumberStadlerID(), 0));
 
         for (Grip grip : gripList) {
-//
+//wyszukiwanie listy kości w których znajduja sie tez gripy
             if(aparatListRepository.findAllByNumberProducer(grip.getNumberGrip()) != null){
                aparatLists.addAll(aparatListRepository.findAllByNumberProducer(grip.getNumberGrip()));
            }
 
         }
+        //tworzenie mapy (pozycja - numer producenta)
         for (AparatList aparatList : aparatLists) {
             aparatListsName.put(aparatList.getPosition(), aparatList.getNumberProducer());
         }
 
+        ///Przechodzimy po całej kabelliscie
         for (KabelList kabelList : kabelLists) {
             for (Map.Entry<String, String> aparatListName : aparatListsName.entrySet()) {
+                //Sprawdzamy czy połączenie jest typu SH i czy idzie na gripa
                 if(aparatListName.getKey().equals(kabelList.getPinTo())){
                     if(kabelList.getColor().toUpperCase().equals("SH")){
+                        //Sprawdzenie czy mamy informacje i tym połaczeniu w bazie
                        if(!findSizeClip(kabelList).contains("Brak przewodu o nazwie: ")){
-
+                            //Dobranie odpowiedniego rozmiaru zacisku do przewodu i dodanie go do mapy z zapotrzebawaniem
                            int val = clipCounter.get(findByClipNumberStadlerID(findSizeClip(kabelList)).getClipNumberStadlerID());
                            clipCounter.put(findSizeClip(kabelList), val + 1);
                        }else{
@@ -75,9 +79,12 @@ public class ClipLibraService {
                        }
                     }
                 }
+                //Sprawdzamy czy połączenie jest typu SH i czy idzie na gripa
                 if(aparatListName.getKey().equals(kabelList.getPinFrom())){
                     if(kabelList.getColor().toUpperCase().equals("SH")){
+                        //Sprawdzenie czy mamy informacje i tym połaczeniu w bazie
                         if(!findSizeClip(kabelList).contains("Brak przewodu o nazwie: ")){
+                            //Dobranie odpowiedniego rozmiaru zacisku do przewodu i dodanie go do mapy z zapotrzebawaniem
                             int val = clipCounter.get(findSizeClip(kabelList));
                             clipCounter.put(findSizeClip(kabelList), val + 1);
                         }else{

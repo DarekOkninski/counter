@@ -41,5 +41,26 @@ public class KabelListSettings {
     private Integer type2ColumnNumber;
     private Integer lengthKableColumnNumber;
 
-
+    @Override
+    public String toString() {
+        return "KabelListSettings{" +
+                "descriptionColumnNumber=" + descriptionColumnNumber +
+                ", nameCableColumnNumber=" + nameCableColumnNumber +
+                ", potentialColumnNumber=" + potentialColumnNumber +
+                ", strangColumnNumber=" + strangColumnNumber +
+                ", areaFromColumnNumber=" + areaFromColumnNumber +
+                ", positionFromColumnNumber=" + positionFromColumnNumber +
+                ", pinFromColumnNumber=" + pinFromColumnNumber +
+                ", areaToColumnNumber=" + areaToColumnNumber +
+                ", positionToColumnNumber=" + positionToColumnNumber +
+                ", pinToColumnNumber=" + pinToColumnNumber +
+                ", meshColumnNumber=" + meshColumnNumber +
+                ", gelifertColumnNumber=" + gelifertColumnNumber +
+                ", colorColumnNumber=" + colorColumnNumber +
+                ", przekrojZylyColumnNumber=" + przekrojZylyColumnNumber +
+                ", type1ColumnNumber=" + type1ColumnNumber +
+                ", type2ColumnNumber=" + type2ColumnNumber +
+                ", lengthKableColumnNumber=" + lengthKableColumnNumber +
+                '}';
+    }
 }

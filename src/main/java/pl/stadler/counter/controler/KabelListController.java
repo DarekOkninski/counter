@@ -47,6 +47,7 @@ public class KabelListController {
 //działa e3 na xmlx i ruplan xmlx oraz csv
     @PostMapping(path = "/add-kabelList")
     public ProjectSettings addKabelListE3(@RequestBody ProjectSettings projectSettings) throws IOException {
+
         try {
             kabelListService.addKabelList(projectSettings);
         } catch (Exception e){
@@ -56,7 +57,7 @@ public class KabelListController {
 
     }
 // Test
-    @EventListener(ApplicationReadyEvent.class)
+//    @EventListener(ApplicationReadyEvent.class)
     public void aaa() throws IOException {
         ProjectSettings projectSettings = new ProjectSettings("L-4444", "C:\\Users\\okndar\\Desktop\\L-4444_GESAMTKABELLISTE.csv");
         kabelListService.addKabelList(projectSettings);

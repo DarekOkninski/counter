@@ -23,6 +23,7 @@ public class IsolationsCable {
     private String przekrojWew;
 
     private Float srednicaWew;
+
     private String przekrojZew;
 
     private boolean multiWire;

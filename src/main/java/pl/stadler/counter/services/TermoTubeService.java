@@ -1,5 +1,6 @@
 package pl.stadler.counter.services;
 
+import lombok.var;
 import org.springframework.stereotype.Service;
 import pl.stadler.counter.models.IsolationsCable;
 import pl.stadler.counter.models.KabelList;
@@ -55,8 +56,9 @@ public class TermoTubeService {
         Map<String, Float> groupNrW = new HashMap<>();
 
         List<KabelList> kabelLists= kabelListRepository.findAll();
-        System.out.println(kabelLists.size());
+        //Znajdowanie unikalnych nr W w kabelliscie Projektów typu E3
         for (KabelList kabelList : kabelLists) {
+            //Jezeli nazwa nie jest pusta ani nie jest to mostek czy cu schine to dodajemy do mapy
             if(!kabelList.getNameCable().equals("") && !kabelList.getPrzekrojZyly().toUpperCase().contains("BR")){
                 if(!kabelList.getPotential().toUpperCase().contains("BR") && !kabelList.getPotential().toUpperCase().contains("CU")){
                     groupNrW.put(kabelList.getNameCable(), 0.0F);
@@ -72,8 +74,9 @@ public class TermoTubeService {
         Map<String, Float> groupNrW = new HashMap<>();
 
         List<KabelList> kabelLists= kabelListRepository.findAll();
-        System.out.println(kabelLists.size());
+        //Znajdowanie unikalnych nr W w kabelliscie Projektów typu Ruplan
         for (KabelList kabelList : kabelLists) {
+            //Wyszykujemy nazw zawierajacych '-W'
             if(kabelList.getNameCable().contains("-W")){
                     groupNrW.put(kabelList.getNameCable(), 0.0F);
             }
@@ -84,16 +87,21 @@ public class TermoTubeService {
 
     public Map<TermoTube, Integer> countTermoTubeMultiWire(Map<String, Float> groupNrW){
         Map<TermoTube, Integer> finalScore = new HashMap<>();
-        for(var TermoTube : this.findAllByColor("Czarna")){
-            finalScore.put(TermoTube, 0);
+        //Tworzymy liste termokurczek czarnych
+        for(TermoTube termoTube: this.findAllByColor("Czarna")){
+            finalScore.put(termoTube, 0);
         }
         groupNrW.forEach((key, value) -> {
+            //Sprawdzenie czy mamy ten typ przewodu w bazie
             if(isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelListRepository.findAllByNameCable(key).get(0).getType1(), kabelListRepository.findAllByNameCable(key).get(0).getType2()) ==null){
+                //Jezeli nie mamy tego typu w bazie to sprawdzamy inna nazwe tego samego przewodu jezeli sprawdzane jest SH i jezeli istnieje inne połaczenie
                 if(kabelListRepository.findAllByNameCable(key).get(0).getType2().toUpperCase().contains("SH") && kabelListRepository.findAllByNameCable(key).size() > 1){
+                    //Sprawdzenie ponowne czy mamy ten typ przewodu w bazie
                     if(isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelListRepository.findAllByNameCable(key).get(1).getType1(), kabelListRepository.findAllByNameCable(key).get(1).getType2()) ==null){
                         System.out.println("Brak przewodu typu: "+ kabelListRepository.findAllByNameCable(key).get(1).getType1()  + " o przekroju żyły: "+  kabelListRepository.findAllByNameCable(key).get(1).getType2());
                     }else{
                         String x = isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelListRepository.findAllByNameCable(key).get(1).getType1(), kabelListRepository.findAllByNameCable(key).get(1).getType2()).getPrzekrojZew();
+                        //Sprawdzenie czy termokurczki w bazie pasuja i jezeli tak to dodajemy odpowiedni typ do zapotrzebowania
                         if (findBySize(Float.parseFloat(x), "Czarna") != null) {
                             TermoTube k = findBySize(Float.parseFloat(x), "Czarna");
                             finalScore.put(k, finalScore.get(k) + 10);
@@ -104,13 +112,14 @@ public class TermoTubeService {
                 }
             }else{
                 String x = isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelListRepository.findAllByNameCable(key).get(0).getType1(), kabelListRepository.findAllByNameCable(key).get(0).getType2()).getPrzekrojZew();
+                //Sprawdzenie czy termokurczki w bazie pasuja i jezeli tak to dodajemy odpowiedni typ do zapotrzebowania
                 if (findBySize(Float.parseFloat(x), "Czarna") != null) {
                     TermoTube k = findBySize(Float.parseFloat(x), "Czarna");
                     finalScore.put(k, finalScore.get(k) + 10);
                 }
             }
         });
-        finalScore.forEach((key, value) -> System.out.println(key + " --- " + value));
+        //finalScore.forEach((key, value) -> System.out.println(key + " --- " + value));
         return finalScore;
     }
 
@@ -118,6 +127,7 @@ public class TermoTubeService {
 
     public Map<TermoTube, Integer> countTermoTubeSH(String NumberProject){
         List<KabelList> kabelLists = new ArrayList<>();
+        //Sprawdzenie jaki to typ projektu i wybranie odpowiedniej metody do zwrócenia listy wyszukiwanych połączeń
         if(projectService.findByNumberProject(NumberProject).getTyp().equals("E3")){
             kabelLists= kabelListRepository.findAllByPotencialZeroE3();
         }else{
@@ -125,17 +135,18 @@ public class TermoTubeService {
         }
         Map<TermoTube, Integer> finalScore = new HashMap<>();
 
-
+        //Tworzymy liste termokurczek Żółto-Zielonych
         for(var TermoTube : this.findAllByColor("Zolta/Zielona")){
             finalScore.put(TermoTube, 0);
         }
 
         for (KabelList kabelList : kabelLists) {
+            //Sprawdzenie czy ten przewód nie jest typu cu schine Sh czy brak danych
             if(!kabelList.getPrzekrojZyly().toUpperCase().contains("CU") && !kabelList.getPrzekrojZyly().equals("") && !kabelList.getPrzekrojZyly().toUpperCase().contains("SH")){
-
+                //Sprawdzenie czy mamy informacje o tym przewodzie w bazie
                 IsolationsCable isolationsCable = isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelList.getType1(), kabelList.getType2());
                 if(isolationsCable != null){
-
+                    //Sprawdzenie czy termokurczki w bazie pasuja i jezeli tak to dodajemy odpowiedni typ do zapotrzebowania
                     TermoTube k = findBySize(Float.parseFloat(isolationsCable.getPrzekrojZew()), "Zolta/Zielona");
                     if(k != null){
                         finalScore.put(k, finalScore.get(k) + 10);
@@ -160,19 +171,21 @@ public class TermoTubeService {
     public Map<TermoTube, Integer> countTermoTubeBlue(String NumberProject){
         List<KabelList> kabelLists = new ArrayList<>();
         Map<TermoTube, Integer> finalScore = new HashMap<>();
-
+//Sprawdzenie jaki to typ projektu i wybranie odpowiedniej metody do zwrócenia listy wyszukiwanych połączeń
         if(projectService.findByNumberProject(NumberProject).getTyp().equals("E3")){
             kabelLists= kabelListRepository.findAllByTermoTubeBlueE3();
         }else{
             kabelLists= kabelListRepository.findAllByTermoTubeBlueRuplan();
         }
+        //Tworzymy liste termokurczek Niebieskich
         for(var TermoTube : this.findAllByColor("Niebieska")){
             finalScore.put(TermoTube, 0);
         }
 
         for (KabelList kabelList : kabelLists) {
-
+            //Sprawdzenie czy ten przewód nie jest typu cu schine Sh czy brak danych
             if(!kabelList.getPrzekrojZyly().toUpperCase().contains("CU") && !kabelList.getPrzekrojZyly().equals("") && !kabelList.getPrzekrojZyly().toUpperCase().contains("SH")){
+                //Sprawdzenie czy mamy informacje o tym przewodzie w bazie
                 IsolationsCable isolationsCable = isolationsCableService.findByTypeIsolationsAndPrzekrojWew(kabelList.getType1(), kabelList.getType2());
                 if(isolationsCable != null){
 

@@ -21,6 +21,7 @@ public class XEMVService {
         Map<String, Integer> finalScore = new HashMap<>();
         List<KabelList> kabelLists = kabelListRepository.findAll();
         int count = 0;
+        //Zliczenie wszystkich wystąpień XEMV w kabelliscie
         for (KabelList kabelList : kabelLists) {
             if(kabelList.getPositionFrom().toUpperCase().contains("XEMV") || kabelList.getPositionTo().toUpperCase().contains("XEMV")){
                 count++;

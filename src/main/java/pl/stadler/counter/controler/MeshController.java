@@ -2,9 +2,8 @@ package pl.stadler.counter.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.stadler.counter.models.KabelList;
 import pl.stadler.counter.models.Mesh;
-import pl.stadler.counter.models.MeshWrapper;
+import pl.stadler.counter.models.Wrapper;
 import pl.stadler.counter.models.Project;
 import pl.stadler.counter.services.MeshService;
 
@@ -38,27 +37,22 @@ public class MeshController {
         return meshService.save(mesh);
     }
 
-////  Działa i dla ruplana i dla E3
-//    @GetMapping(path = "/group-map/{projectNumber}")
-//    public Map<Mesh, Float> groupMap(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
-//        return meshService.groupMap(projectNumber);
-//    }
     @PostMapping(path = "/group-map")
-    public List<MeshWrapper> groupMap(@RequestBody Project project) throws IOException {
+    public List<Wrapper> groupMap(@RequestBody Project project) throws IOException {
         String userName = System.getProperty("user.name");
         Map<Mesh, Float> m = meshService.groupMap(project.getNumberProject());
 
-        List<MeshWrapper> meshWrapperList = new ArrayList<>();
+        List<Wrapper> wrapperList = new ArrayList<>();
 
         m.forEach((k,v) -> {
-            MeshWrapper meshWrapper = MeshWrapper.builder()
+            Wrapper wrapper = Wrapper.builder()
                     .mesh(k)
-                    .amount(v)
+                    .amountFloat(v)
                     .build();
-            meshWrapperList.add(meshWrapper);
+            wrapperList.add(wrapper);
         });
 
-        return meshWrapperList;
+        return wrapperList;
     }
 
 }

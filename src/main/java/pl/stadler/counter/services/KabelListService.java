@@ -75,7 +75,7 @@ public class KabelListService {
         KabelListSettings kabelListSettings = kabelListSettingsService.findByProjectNumberProject(projectSettings.getProjectNumber());
 
 
-        if(projectSettings.getKabelListPath().contains("csv")){
+        if(projectSettings.getKabelListPath().toUpperCase().contains("CSV")){
 
             if(projectService.findByNumberProject(projectSettings.getProjectNumber()).getTyp().equals("E3")){
                map = excelMenager.getMapFromCSV(projectSettings.getKabelListPath());
@@ -116,8 +116,6 @@ public class KabelListService {
                         .lengthKable(value.get(kabelListSettings.getLengthKableColumnNumber()))
                         .build();
                 save(kabelList);
-            }else if (!value.isEmpty()){
-                System.out.println(value);
             }
 
         });

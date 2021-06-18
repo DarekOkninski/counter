@@ -138,6 +138,8 @@ public class DBInitializer {
                 map.forEach((key, value) -> {
                     Distances distances =Distances.builder()
                             .numberHarting(value.get(0))
+                            .orFrame(Boolean.valueOf(value.get(1)))
+                            .gender(value.get(2))
                             .build();
                     distancesService.save(distances);
                 });
@@ -151,6 +153,7 @@ public class DBInitializer {
                             .przekrojWew(value.get(1))
                             .srednicaWew(Float.valueOf(value.get(2)))
                             .przekrojZew(value.get(3))
+                            .multiWire(Boolean.parseBoolean(value.get(4)))
                             .build();
 
 //

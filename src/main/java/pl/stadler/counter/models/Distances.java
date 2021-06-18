@@ -21,6 +21,9 @@ public class Distances {
     private Long id;
 
     private String numberHarting;
+    private Boolean orFrame;
+    private String gender;
+
 
 
 }
