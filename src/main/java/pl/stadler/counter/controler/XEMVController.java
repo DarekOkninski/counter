@@ -16,6 +16,10 @@ public class XEMVController {
         this.xemvService = xemvService;
     }
 
+    //////////////////
+    // wyliczenie Xemv
+    //////////////////
+
     @GetMapping(path = "/counter")
     public Map<String, Integer> countXEMV() {
         return xemvService.XEMVCount();

@@ -27,11 +27,18 @@ public class ClipLibraController {
         return clipLibraService.findAll();
     }
 
+    ///////////////////////////////////////
+    // zapisanie obiektu clip
+    ///////////////////////////////////////
 
     @PostMapping(path = "/save")
     public ClipLibra save(ClipLibra clipLibra){
         return clipLibraService.save(clipLibra);
     }
+
+    ///////////////////////////////////////
+    // metoda oblicza clipy na dany projekt
+    ///////////////////////////////////////
 
     @GetMapping(path= "/counter")
     public Map<String, Integer> clipLibraCounter(){ return clipLibraService.clipLibraCounter();}

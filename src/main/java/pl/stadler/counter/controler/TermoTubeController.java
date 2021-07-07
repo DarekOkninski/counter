@@ -26,14 +26,23 @@ public class TermoTubeController {
     public TermoTubeController(TermoTubeService termoTubeService) {
         this.termoTubeService = termoTubeService;
     }
+
+    ////////////////////////////////////
+    // zapisanie obiektu do bazdy danych
+    ////////////////////////////////////
+
     @GetMapping(path = "/save")
     public TermoTube save(TermoTube termoTube){
         return termoTubeService.save(termoTube);
     }
 
-    // czarne - 5 blok
+    ////////////////////////////////////////////
+    // wyliczenie termokurczek - czarne - 5 blok
+    ////////////////////////////////////////////
+
     @GetMapping(path = "/counter/{projectNumber}")
     public List<Wrapper> countTermoTubeMultiWire(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
+
         Map<TermoTube, Integer> t = termoTubeService.countTermoTubeMultiWire(projectNumber);
         List<Wrapper> wrapperList = new ArrayList<>();
 
@@ -47,8 +56,11 @@ public class TermoTubeController {
         return wrapperList;
     }
 
-    //sh - 6 blok
-    @GetMapping(path = "/countTermoTubeSH/{projectNumber}")
+    ////////////////////////////////////////
+    // wyliczenie termokurczek - sh - 6 blok
+    ////////////////////////////////////////
+
+    @GetMapping(path = "/count-termotube-sh/{projectNumber}")
     public List<Wrapper> countTermoTubeSH(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
         Map<TermoTube, Integer> t = termoTubeService.countTermoTubeSH(projectNumber);
         List<Wrapper> wrapperList = new ArrayList<>();
@@ -63,8 +75,11 @@ public class TermoTubeController {
         return wrapperList;
     }
 
-    // blue - 6 blok
-    @GetMapping(path = "/countTermoTubeBlue/{projectNumber}")
+    //////////////////////////////////////////
+    // wyliczenie termokurczek - blue - 6 blok
+    //////////////////////////////////////////
+
+    @GetMapping(path = "/count-termotube-blue/{projectNumber}")
     public List<Wrapper> countTermoTubeBlue(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
         Map<TermoTube, Integer> t = termoTubeService.countTermoTubeBlue(projectNumber);
         List<Wrapper> wrapperList = new ArrayList<>();

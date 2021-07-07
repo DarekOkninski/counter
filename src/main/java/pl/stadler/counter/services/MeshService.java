@@ -71,7 +71,7 @@ public class MeshService {
         }
         int count = 0;
         List<List<String>> pom = new ArrayList<>();
-    //wtorzenie grup z wczytanego pliku z wyjatkami
+    // tworzenie grup z wczytanego pliku z wyjatkami
         for(Map.Entry<Integer, List<String>> x : mapExceptions.entrySet()) {
             if(x.getValue().isEmpty()){
                 groupExpection.put(count, pom);
@@ -88,10 +88,10 @@ public class MeshService {
 
         int i = 0;
 
-//Przechodzenie po kazdej grupie
+        // przechodzenie po kazdej grupie
         for (Object[] x : data) {
        // odrzucenie strangów z koncówka 99 poniewaz sa to połączenia intern których nie liczymy
-//            na tablice nie ma siatek
+            // na tablice nie ma siatek
             if (!x[0].toString().endsWith("99")) {
                 //ustawienie flagi czy grupa wystepuje juz w wyjatkach
                 boolean flag =true;
@@ -99,7 +99,7 @@ public class MeshService {
                     // porównanie grupy wyjatków i grup
                     for (List<String> j :k.getValue()){
                         if(j.get(0).equals(x[0].toString()) && j.get(1).equals(x[1].toString()) && j.get(2).equals(x[2].toString())) {
-                            flag =false;
+                            flag = false;
                         }
                     }
                 }
@@ -162,7 +162,7 @@ public class MeshService {
         };
         if(orMesh){
             float sum = 0;
-            for(int i = 0; i <group.size(); i++){
+            for (int i = 0; i <group.size(); i++){
 
                     Boolean orTypeCable = false;
         //sprawdzenie czy siatka powinna byc czarna czy szara
@@ -327,7 +327,7 @@ public class MeshService {
             }
         }
 
-        finalScore.forEach((key, value) -> System.out.println(key.getName() + "  --  " + key.getNumberProducer() + "  --  " + value));
+//        finalScore.forEach((key, value) -> System.out.println(key.getName() + "  --  " + key.getNumberProducer() + "  --  " + value));
 
         return finalScore;
     }
@@ -351,6 +351,8 @@ public class MeshService {
                     orMesh = true;
                 }
             }else{
+                //wyjatek braku kabla
+
                 missingCable.put(group.get(i).getType1(), group.get(i).getPrzekrojZyly());
             }
         };
@@ -379,7 +381,7 @@ public class MeshService {
                         //jezeli jest to przewód wielozyłowy to dadajemy go do mapy inaczej obliczamy
 //                        System.out.println(group.get(i).getType1() + " -- " + group.get(i).getPrzekrojZyly() +  " ---------" + isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getPrzekrojZyly()).isMultiWire());
                         if(isolationsCableService.findByTypeIsolationsAndPrzekrojWew(group.get(i).getType1(), group.get(i).getPrzekrojZyly()).isMultiWire()){
-                            System.out.println(multiWire);
+                 //           System.out.println(multiWire);
                             for(String name : multiWire){
 
                                 if(name.equals(group.get(i).getNameCable())){

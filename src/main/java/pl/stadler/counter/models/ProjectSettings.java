@@ -13,4 +13,5 @@ public class ProjectSettings {
 
     private String projectNumber;
     private String kabelListPath;
+    private Project project;
 }

@@ -3,6 +3,7 @@ package pl.stadler.counter.config;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,23 +40,74 @@ public class DBInitializer {
     private  GripService gripService;
     @Autowired
     private  TermoTubeService termoTubeService;
+    @Autowired
+    private  BoneHartingService boneHartingService;
+    @Autowired
+    private  PinsToBoneService pinsToBoneService;
+    @Autowired
+    private InstructionHartingSettingsService instructionHartingSettingsService;
 
+    // pobranie ścieżek
+    @Value("${settings-path.termotubePath}")
+    private String termotubePath;
+    @Value("${settings-path.gripPath}")
+    private String gripPath;
+    @Value("${settings-path.libraPath}")
+    private String libraPath;
+    @Value("${settings-path.distancesPath}")
+    private String distancesPath;
+    @Value("${settings-path.isolationPath}")
+    private String isolationPath;
+    @Value("${settings-path.meshPath}")
+    private String meshPath;
+    @Value("${settings-path.boneHartingPath}")
+    private String boneHartingPath;
+
+    @Value("${settings-path.pinsToBonePath}")
+    private String pinsToBonePath;
     @Bean
     InitializingBean init() {
         return () -> {
+
+            if (boneHartingService.findAll().isEmpty()) {
+                Map<Integer, List<String>> map = excelMenager.readWorksheet(boneHartingPath ,"Sheet1");
+                map.forEach((key, value) -> {
+                    BoneHarting boneHarting = BoneHarting.builder()
+                            .name(value.get(0))
+                            .numberProducer(value.get(1))
+                            .size(Integer.valueOf(value.get(2)))
+                            .build();
+                    boneHartingService.save(boneHarting);
+                });
+            }
+            if (pinsToBoneService.findAll().isEmpty()) {
+                Map<Integer, List<String>> map = excelMenager.readWorksheet(pinsToBonePath ,"Sheet1");
+                map.forEach((key, value) -> {
+                    PinsToBone pinsToBone = PinsToBone.builder()
+                            .boneHarting(boneHartingService.findByNumberProducer(value.get(0)))
+                            .namePin(value.get(1))
+                            .color(value.get(2))
+                            .size(Float.parseFloat(value.get(3)))
+                            .numberProducer(value.get(4))
+                            .stadlerId(value.get(5))
+                            .build();
+                    pinsToBoneService.save(pinsToBone);
+                });
+            }
+
+
+
             if (gripService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//grip.xlsx" ,"Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet(gripPath ,"Sheet1");
                 map.forEach((key, value) -> {
                     Grip grip = Grip.builder()
                             .numberGrip(value.get(0))
                             .build();
-
-
                     gripService.save(grip);
                 });
             }
             if (termoTubeService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//termoTube.xlsx" ,"Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet(termotubePath,"Sheet1");
                 map.forEach((key, value) -> {
                     TermoTube termoTube = TermoTube.builder()
                             .name(value.get(0))
@@ -66,11 +118,51 @@ public class DBInitializer {
                             .color(value.get(5))
                             .type(value.get(6))
                             .build();
-
-
                     termoTubeService.save(termoTube);
                 });
             }
+
+            if (instructionHartingSettingsService.findAll().isEmpty()) {
+
+                InstructionHartingSettings instructionHartingSettings = InstructionHartingSettings.builder()
+                        .project(projectService.findByNumberProject("L-4444"))
+                        .nameBoneColumnNumber(2)
+                        .areaBoneColumnNumber(0)
+                        .orOneBoneColumnNumber(7)
+                        .genderColumnNumber(3)
+                        .boneNumberColumnNumber(8)
+                        .modulAColumnNumber(8)
+                        .modulBColumnNumber(9)
+                        .modulCColumnNumber(10)
+                        .modulDColumnNumber(11)
+                        .modulEColumnNumber(12)
+                        .modulFColumnNumber(13)
+                        .contactColumnNumber(14)
+                        .additionalMaterialColumnNumber(15)
+                        .build();
+                instructionHartingSettingsService.save(instructionHartingSettings);
+
+
+                InstructionHartingSettings instructionHartingSettings2 = InstructionHartingSettings.builder()
+                        .project(projectService.findByNumberProject("L-4400"))
+                        .nameBoneColumnNumber(0)
+                        .areaBoneColumnNumber(1)
+                        .orOneBoneColumnNumber(6)
+                        .genderColumnNumber(2)
+                        .boneNumberColumnNumber(7)
+                        .modulAColumnNumber(7)
+                        .modulBColumnNumber(8)
+                        .modulCColumnNumber(9)
+                        .modulDColumnNumber(10)
+                        .modulEColumnNumber(11)
+                        .modulFColumnNumber(12)
+                        .contactColumnNumber(13)
+                        .additionalMaterialColumnNumber(14)
+                        .build();
+                instructionHartingSettingsService.save(instructionHartingSettings2);
+
+            }
+
             if (kabelListSettingsService.findAll().isEmpty()) {
                 KabelListSettings kabelListSettings = KabelListSettings.builder()
                         .project(projectService.findByNumberProject("L-4444"))
@@ -120,7 +212,7 @@ public class DBInitializer {
             }
 
             if (clipLibraService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//libra.xlsx" ,"Sheet1");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet(libraPath ,"Sheet1");
                 map.forEach((key, value) -> {
                     ClipLibra clipLibra = ClipLibra.builder()
                             .clipNumberStadlerID(value.get(0))
@@ -134,7 +226,7 @@ public class DBInitializer {
 
             }
             if (distancesService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//distances.xlsx", "KABELLISTE");
+                Map<Integer, List<String>> map = excelMenager.readWorksheet(distancesPath, "KABELLISTE");
                 map.forEach((key, value) -> {
                     Distances distances =Distances.builder()
                             .numberHarting(value.get(0))
@@ -145,7 +237,7 @@ public class DBInitializer {
                 });
             }
             if (isolationsCableService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//isolationsCable.xlsx" ,"KABELLISTE" );
+                Map<Integer, List<String>> map = excelMenager.readWorksheet(isolationPath ,"KABELLISTE" );
                 map.forEach((key, value) -> {
 
                     IsolationsCable cable = IsolationsCable.builder()
@@ -161,7 +253,7 @@ public class DBInitializer {
                 });
             }
             if (meshService.findAll().isEmpty()) {
-                Map<Integer, List<String>> map = excelMenager.readWorksheet("L://05_KIEROWNICTWO//07_Teamleader//Okninski Dariusz//Ustawienia aplikacji//databaseExcel//mesh.xlsx","KABELLISTE" );
+                Map<Integer, List<String>> map = excelMenager.readWorksheet(meshPath,"KABELLISTE" );
                 map.forEach((key, value) -> {
                     Mesh mesh = Mesh.builder()
                             .color(value.get(0))

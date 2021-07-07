@@ -2,6 +2,7 @@ package pl.stadler.counter.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.stadler.counter.models.Mesh;
 import pl.stadler.counter.models.Wrapper;
 import pl.stadler.counter.models.Project;
@@ -54,5 +55,4 @@ public class MeshController {
 
         return wrapperList;
     }
-
 }

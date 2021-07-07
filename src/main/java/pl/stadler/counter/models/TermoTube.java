@@ -27,7 +27,4 @@ public class TermoTube {
     private Float sizeMax;
     private String color;
     private String type;
-
-
-
 }

@@ -20,7 +20,6 @@ public class ClipLibra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String  clipNumberStadlerID;
     private String  clipNumberProducer;
     private String  diameterClip;

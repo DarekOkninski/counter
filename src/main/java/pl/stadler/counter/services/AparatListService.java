@@ -38,6 +38,9 @@ public class AparatListService {
     public List<AparatList> findAllByNameProducer(String nameProducer) {
         return aparatListRepository.findAllByNameProducer(nameProducer);
     }
+    public List<AparatList> findAllByAreaAndPosition(String area, String position) {
+        return aparatListRepository.findAllByAreaAndPosition(area, position);
+    }
     public AparatList save(AparatList aparatList){
         return aparatListRepository.save(aparatList);
     }
