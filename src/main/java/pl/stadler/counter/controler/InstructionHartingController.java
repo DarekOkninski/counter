@@ -13,6 +13,8 @@ import pl.stadler.counter.services.InstructionHartingService;
 import pl.stadler.counter.services.ProjectService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,16 +30,24 @@ public class InstructionHartingController {
 
         this.projectService = projectService;
     }
-    //@EventListener(ApplicationReadyEvent.class)
-    @GetMapping(path = "count")
-    public Map<String, Integer> countPinsHartingE3(){
-        return instructionHartingService.countPinsHartingE3();
-    }
+
 
     @PostMapping(path = "/save-instruction-harting-to-db")
     public Wrapper saveInstructionHartingToDB(@RequestBody Wrapper wrapper) {
         try {
             instructionHartingService.addInstructinHartingToDB(wrapper);
+            InstructionHartingController.info("InstructionHartingController.saveInstructionHartingToDB() - Lista została dodana do DB");
+        } catch (Exception ignored) {
+            InstructionHartingController.error("InstructionHartingController.saveInstructionHartingToDB() - Błąd dodania listy do DB");
+        }
+        return wrapper;
+    }
+
+    @PostMapping(path = "/count-pins-harting")
+    public Wrapper countPinsHarting(@RequestBody Project project) {
+        Wrapper wrapper = new Wrapper();
+        try {
+            wrapper = instructionHartingService.countPinsHarting(project.getNumberProject());
             InstructionHartingController.info("InstructionHartingController.saveInstructionHartingToDB() - Lista została dodana do DB");
         } catch (Exception ignored) {
             InstructionHartingController.error("InstructionHartingController.saveInstructionHartingToDB() - Błąd dodania listy do DB");
@@ -57,6 +67,11 @@ public class InstructionHartingController {
         wrapper.getProjectSettings().setProject(project);
 
         saveInstructionHartingToDB(wrapper);
+    }
+    //@EventListener(ApplicationReadyEvent.class)
+    public void testCount(){
+        Project project = projectService.findByNumberProject("L-4444");
+        countPinsHarting(project);
     }
 
 

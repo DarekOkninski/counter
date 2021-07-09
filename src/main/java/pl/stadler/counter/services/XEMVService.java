@@ -23,14 +23,6 @@ public class XEMVService {
     }
 
 
-    /**
-     * Metoda do wyliczenia Xemv
-     *
-     * @param args Unused.
-     * @return Map<String, Integer>
-     * @throws NullPointerException
-     * @see NullPointerException
-     */
 
     public Map<String, Integer> XEMVCount(){
         Map<String, Integer> finalScore = new HashMap<>();

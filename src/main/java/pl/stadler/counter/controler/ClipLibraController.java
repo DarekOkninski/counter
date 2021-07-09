@@ -1,11 +1,15 @@
 package pl.stadler.counter.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.stadler.counter.models.ClipLibra;
+import pl.stadler.counter.models.Project;
+import pl.stadler.counter.models.Wrapper;
 import pl.stadler.counter.repositories.ClipLibraRepository;
 import pl.stadler.counter.services.ClipLibraService;
 
@@ -41,5 +45,10 @@ public class ClipLibraController {
     ///////////////////////////////////////
 
     @GetMapping(path= "/counter")
-    public Map<String, Integer> clipLibraCounter(){ return clipLibraService.clipLibraCounter();}
+    public Wrapper clipLibraCounter(){ return clipLibraService.clipLibraCounter();}
+
+    //@EventListener(ApplicationReadyEvent.class)
+    public void testCount(){
+        System.out.println(clipLibraCounter());
+    }
 }

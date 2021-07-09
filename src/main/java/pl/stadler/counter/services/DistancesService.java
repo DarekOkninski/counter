@@ -66,6 +66,8 @@ public class DistancesService {
         } catch (Exception e) {
             loggerDistancesService.error("DistancesService.countDistance() + błąd " + e);
         }
+
+
         return finalSorce;
     }
 }

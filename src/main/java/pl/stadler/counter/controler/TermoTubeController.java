@@ -1,6 +1,8 @@
 package pl.stadler.counter.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,38 +43,19 @@ public class TermoTubeController {
     ////////////////////////////////////////////
 
     @GetMapping(path = "/counter/{projectNumber}")
-    public List<Wrapper> countTermoTubeMultiWire(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
-
-        Map<TermoTube, Integer> t = termoTubeService.countTermoTubeMultiWire(projectNumber);
-        List<Wrapper> wrapperList = new ArrayList<>();
-
-        t.forEach((k,v) -> {
-            Wrapper wrapper = Wrapper.builder()
-                    .termoTube(k)
-                    .amountInteger(v)
-                    .build();
-            wrapperList.add(wrapper);
-        });
-        return wrapperList;
+    public Wrapper countTermoTubeMultiWire(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
+        return termoTubeService.countTermoTubeMultiWire(projectNumber);
     }
+
+
 
     ////////////////////////////////////////
     // wyliczenie termokurczek - sh - 6 blok
     ////////////////////////////////////////
 
     @GetMapping(path = "/count-termotube-sh/{projectNumber}")
-    public List<Wrapper> countTermoTubeSH(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
-        Map<TermoTube, Integer> t = termoTubeService.countTermoTubeSH(projectNumber);
-        List<Wrapper> wrapperList = new ArrayList<>();
-
-        t.forEach((k,v) -> {
-            Wrapper wrapper = Wrapper.builder()
-                    .termoTube(k)
-                    .amountInteger(v)
-                    .build();
-            wrapperList.add(wrapper);
-        });
-        return wrapperList;
+    public Wrapper countTermoTubeSH(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
+        return termoTubeService.countTermoTubeSH(projectNumber);
     }
 
     //////////////////////////////////////////
@@ -80,18 +63,11 @@ public class TermoTubeController {
     //////////////////////////////////////////
 
     @GetMapping(path = "/count-termotube-blue/{projectNumber}")
-    public List<Wrapper> countTermoTubeBlue(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
-        Map<TermoTube, Integer> t = termoTubeService.countTermoTubeBlue(projectNumber);
-        List<Wrapper> wrapperList = new ArrayList<>();
-
-        t.forEach((k,v) -> {
-            Wrapper wrapper = Wrapper.builder()
-                    .termoTube(k)
-                    .amountInteger(v)
-                    .build();
-            wrapperList.add(wrapper);
-        });
-        return wrapperList;
+    public Wrapper countTermoTubeBlue(@PathVariable(value = "projectNumber") String projectNumber) throws IOException {
+        return termoTubeService.countTermoTubeBlue(projectNumber);
     }
+
+
+
 
 }
