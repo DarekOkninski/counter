@@ -12,8 +12,8 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/aparat-list-settings")
 public class AparatListSettingsController {
-    private final AparatListSettingsService aparatListSettingsService;
 
+    private final AparatListSettingsService aparatListSettingsService;
 
     public AparatListSettingsController(AparatListSettingsService aparatListSettingsService) {
         this.aparatListSettingsService = aparatListSettingsService;
@@ -23,12 +23,14 @@ public class AparatListSettingsController {
     public List<AparatListSettings> findAll() {
         return aparatListSettingsService.findAll();
     }
+
     @GetMapping(path = "/find-by-project")
-    public AparatListSettings findByProjectNumberProject(String numberProject){
+    public AparatListSettings findByProjectNumberProject(String numberProject) {
         return aparatListSettingsService.findByProjectNumberProject(numberProject);
     }
+
     @PostMapping(path = "/save")
-    public AparatListSettings save(AparatListSettings aparatListSettings){
+    public AparatListSettings save(AparatListSettings aparatListSettings) {
         return aparatListSettingsService.save(aparatListSettings);
     }
 }

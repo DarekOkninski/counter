@@ -38,9 +38,9 @@ public class AparatListController {
 
     @GetMapping(path = "/add-aparatlist")
     public void addKabelList() throws IOException {
-        String address = "C://Users//okndar//Desktop//L-4400_Apparateliste.xlsx";
-        //String address = "C://Users//okndar//Desktop//L-4444_Apparateliste.xlsx";
-        aparatListService.addAparatList(address, "L-4400");
+        //String address = "C://Users//okndar//Desktop//L-4400_Apparateliste.xlsx";
+        String address = "C://Users//okndar//Desktop//L-4444_Apparateliste.xlsx";
+        aparatListService.addAparatList(address, "L-4444");
     }
 
 }

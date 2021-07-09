@@ -17,5 +17,5 @@ public interface ClipLibraRepository   extends JpaRepository<ClipLibra, Long> {
     public Optional<ClipLibra> findByClipNumberStadlerID(String clipNumberStadlerID);
 
     @Query("SELECT m FROM ClipLibra m where m.diameterClipMin <= ?1 and m.diameterClipMax >= ?1")
-    public ClipLibra findBySize(float diameterClipSize);
+    public Optional<ClipLibra> findBySize(float diameterClipSize);
 }

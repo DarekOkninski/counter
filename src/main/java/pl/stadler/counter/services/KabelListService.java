@@ -1,12 +1,11 @@
 package pl.stadler.counter.services;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.stadler.counter.excel.ExcelMenager;
-import pl.stadler.counter.models.KabelList;
-import pl.stadler.counter.models.KabelListSettings;
-import pl.stadler.counter.models.ProjectSettings;
-import pl.stadler.counter.models.TermoTube;
+import pl.stadler.counter.models.*;
 import pl.stadler.counter.repositories.KabelListRepository;
 
 import java.io.IOException;
@@ -25,78 +24,79 @@ public class KabelListService {
     public KabelListService(KabelListRepository kabelListRepository, ExcelMenager excelMenager, ProjectService projectService, KabelListSettingsService kabelListSettingsService) {
         this.kabelListRepository = kabelListRepository;
         this.excelMenager = excelMenager;
-
         this.projectService = projectService;
         this.kabelListSettingsService = kabelListSettingsService;
     }
-    public List<KabelList> findAll(){
+
+    public List<KabelList> findAll() {
         return kabelListRepository.findAll();
     }
+
     public List<KabelList> findAllByPotencialZeroE3() {
         return kabelListRepository.findAllByPotencialZeroE3();
     }
+
     public List<KabelList> findAllByPotencialZeroRuplan() {
         return kabelListRepository.findAllByPotencialZeroRuplan();
     }
-    public List<KabelList> findAllByStrang(String strang){
+
+    public List<KabelList> findAllByStrang(String strang) {
         return kabelListRepository.findAllByStrang(strang);
     }
-    public List<KabelList> findAllByNameCable(String nameCable){
+
+    public List<KabelList> findAllByNameCable(String nameCable) {
         return kabelListRepository.findAllByNameCable(nameCable);
     }
-    public List<KabelList> findAllByStrangAndPositionFromAndPositionTo(String strang, String positionFrom, String positionTo){
+
+    public List<KabelList> findAllByStrangAndPositionFromAndPositionTo(String strang, String positionFrom, String positionTo) {
         return kabelListRepository.findAllByStrangAndPositionFromAndPositionTo(strang, positionFrom, positionTo);
     }
-    public List<KabelList> findAllByPositionFromAndPinFromAndPositionToAndPinTo(String positionFrom, String pinFrom, String positionTo, String pinTo){
+
+    public List<KabelList> findAllByPositionFromAndPinFromAndPositionToAndPinTo(String positionFrom, String pinFrom, String positionTo, String pinTo) {
         return kabelListRepository.findAllByPositionFromAndPinFromAndPositionToAndPinTo(positionFrom, pinFrom, positionTo, pinTo);
     }
 
-    public List<KabelList> findAllByAreaFromAndPositionFromAndAreaToAndPositionTo(String areaFrom, String positionFrom, String areaTo, String positionTo){
+    public List<KabelList> findAllByAreaFromAndPositionFromAndAreaToAndPositionTo(String areaFrom, String positionFrom, String areaTo, String positionTo) {
         return kabelListRepository.findAllByPositionFromAndPinFromAndPositionToAndPinTo(areaFrom, positionFrom, areaTo, positionTo);
     }
 
-    public List<Object[]> mesh(){
+    public List<Object[]> mesh() {
         return kabelListRepository.mesh();
     }
 
-    public List<Object[]> groupE3(){
+    public List<Object[]> groupE3() {
         return kabelListRepository.groupE3();
     }
-    public KabelList save(KabelList kabelList){
+
+    /////////////////////////////
+    // zapisanie kabelListy do DB
+    /////////////////////////////
+
+    public KabelList save(KabelList kabelList) {
         return kabelListRepository.save(kabelList);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////
+    // wybór odpowiedniej metody do wczytania plików oraz zapisanie kabelListy do DB
+    ////////////////////////////////////////////////////////////////////////////////
 
-
-    public void addKabelList(ProjectSettings projectSettings) throws IOException {
+    public void addKabelListToDB(Wrapper wrapper) throws IOException, InvalidFormatException {
 
         kabelListRepository.deleteAll();
         Map<Integer, List<String>> map = null;
-        KabelListSettings kabelListSettings = kabelListSettingsService.findByProjectNumberProject(projectSettings.getProjectNumber());
+        KabelListSettings kabelListSettings = kabelListSettingsService.findByProjectNumberProject(wrapper.getProjectSettings().getProject().getNumberProject());
 
-
-        if(projectSettings.getKabelListPath().toUpperCase().contains("CSV")){
-
-            if(projectService.findByNumberProject(projectSettings.getProjectNumber()).getTyp().equals("E3")){
-               map = excelMenager.getMapFromCSV(projectSettings.getKabelListPath());
-            }else{
-                map = excelMenager.getMapFromCSV(projectSettings.getKabelListPath());
-            }
-        }else{
-
-            if(projectService.findByNumberProject(projectSettings.getProjectNumber()).getTyp().equals("E3")){
-                map = excelMenager.readWorksheetE3(projectSettings.getKabelListPath(), "KABELLISTE");
-            }else{
-                map = excelMenager.readWorksheet(projectSettings.getKabelListPath(), "KABELLISTE");
-            }
-
+        if (wrapper.getProjectSettings().getKabelListPath().toUpperCase().contains("CSV")) {
+                map = excelMenager.getMapFromCSV(wrapper.getProjectSettings().getKabelListPath());
+        } else {
+                map = excelMenager.readWorksheetExcelXLSX(wrapper.getProjectSettings().getKabelListPath(),"KABELLISTE");
         }
 
         map.forEach((key, value) -> {
-            if(!value.isEmpty() && value.size() > 17){
+            if (!value.isEmpty() && value.size() > 17) {
 
                 KabelList kabelList = KabelList.builder()
-                        .project(projectService.findByNumberProject(projectSettings.getProjectNumber()))
+                        .project(wrapper.getProjectSettings().getProject())
                         .description(value.get(kabelListSettings.getDescriptionColumnNumber()))
                         .nameCable(value.get(kabelListSettings.getNameCableColumnNumber()))
                         .potential(value.get(kabelListSettings.getPotentialColumnNumber()))
@@ -120,9 +120,5 @@ public class KabelListService {
 
         });
     }
-
-
-
-
 
 }

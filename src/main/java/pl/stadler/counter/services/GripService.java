@@ -15,6 +15,7 @@ public class GripService {
     public GripService(GripRepository gripRepository) {
         this.gripRepository = gripRepository;
     }
+
     public List<Grip> findAll() {
         return gripRepository.findAll();
     }
@@ -22,7 +23,8 @@ public class GripService {
     public Grip findByNumberGrip(String numberGrip) {
         return gripRepository.findByNumberGrip(numberGrip).orElse(null);
     }
-    public Grip save(Grip grip){
+
+    public Grip save(Grip grip) {
         return gripRepository.save(grip);
     }
 }

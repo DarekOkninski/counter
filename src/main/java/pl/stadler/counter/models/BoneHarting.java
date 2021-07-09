@@ -1,5 +1,6 @@
 package pl.stadler.counter.models;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,16 +15,19 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClipLibra {
+public class BoneHarting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String  clipNumberStadlerID;
-    private String  clipNumberProducer;
-    private String  diameterClip;
-    private float  diameterClipMin;
-    private float  diameterClipMax;
+    private String name;
+    private String numberProducer;
+    private Integer size;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "boneHarting")
+    private Set<PinsToBone> pinsToBoneSet;
 
 }

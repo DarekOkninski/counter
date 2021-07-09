@@ -14,15 +14,18 @@ public class ClipLibraService {
     private final KabelListRepository kabelListRepository;
     private final AparatListRepository aparatListRepository;
     private final GripRepository gripRepository;
-    private final IsolationsCableRepository isolationsCableRepository;
+    private final IsolationsCableService isolationsCableService;
+    private static LinkedHashSet<String> error = new LinkedHashSet<String>();
+    private static LinkedHashSet<String> informations = new LinkedHashSet<String>();
 
     @Autowired
-    public ClipLibraService(ClipLibraRepository clipLibraRepository, KabelListRepository kabelListRepository, AparatListRepository aparatListRepository, GripRepository gripRepository, IsolationsCableRepository isolationsCableRepository) {
+    public ClipLibraService(ClipLibraRepository clipLibraRepository, KabelListRepository kabelListRepository, AparatListRepository aparatListRepository, GripRepository gripRepository, IsolationsCableService isolationsCableService) {
         this.clipLibraRepository = clipLibraRepository;
         this.kabelListRepository = kabelListRepository;
         this.aparatListRepository = aparatListRepository;
         this.gripRepository = gripRepository;
-        this.isolationsCableRepository = isolationsCableRepository;
+        this.isolationsCableService = isolationsCableService;
+
     }
 
     public List<ClipLibra> findAll() {
@@ -32,80 +35,94 @@ public class ClipLibraService {
     public ClipLibra findByClipNumberStadlerID(String clipNumberStadlerID) {
         return clipLibraRepository.findByClipNumberStadlerID(clipNumberStadlerID).orElse(null);
     }
-    public ClipLibra save(ClipLibra clipLibra){
+    public ClipLibra findBySize(float size) {
+        return clipLibraRepository.findBySize(size).orElse(null);
+    }
+
+    public ClipLibra save(ClipLibra clipLibra) {
         return clipLibraRepository.save(clipLibra);
     }
 
 
-
-    public Map<String, Integer> clipLibraCounter(){
-        List<KabelList> kabelLists= kabelListRepository.findAll();
+    public Wrapper clipLibraCounter() {
+        List<KabelList> kabelLists = kabelListRepository.findAll();
         List<AparatList> aparatLists = new ArrayList<>();
         Map<String, String> aparatListsName = new HashMap<>();
-        List<Grip> gripList= gripRepository.findAll();
+        List<Grip> gripList = gripRepository.findAll();
 
         Map<String, Integer> clipCounter = new HashMap<>();
 
-
         List<ClipLibra> nameClip = findAll();
-//Tworzenie mapy z rodzajami  Clipów i liczka ich zapotrzebowan
-       nameClip.forEach(x -> clipCounter.put(x.getClipNumberStadlerID(), 0));
+        // tworzenie mapy z rodzajami  Clipów i liczka ich zapotrzebowan
+        nameClip.forEach(x -> clipCounter.put(x.getClipNumberStadlerID(), 0));
 
         for (Grip grip : gripList) {
-//wyszukiwanie listy kości w których znajduja sie tez gripy
-            if(aparatListRepository.findAllByNumberProducer(grip.getNumberGrip()) != null){
-               aparatLists.addAll(aparatListRepository.findAllByNumberProducer(grip.getNumberGrip()));
-           }
-
+            // wyszukiwanie listy kości w których znajduja sie też gripy
+            if (aparatListRepository.findAllByNumberProducer(grip.getNumberGrip()) != null) {
+                aparatLists.addAll(aparatListRepository.findAllByNumberProducer(grip.getNumberGrip()));
+            }
         }
-        //tworzenie mapy (pozycja - numer producenta)
+
+        // tworzenie mapy (pozycja - numer producenta)
         for (AparatList aparatList : aparatLists) {
             aparatListsName.put(aparatList.getPosition(), aparatList.getNumberProducer());
         }
 
-        ///Przechodzimy po całej kabelliscie
+        // przechodzimy po całej kabelliscie
         for (KabelList kabelList : kabelLists) {
             for (Map.Entry<String, String> aparatListName : aparatListsName.entrySet()) {
                 //Sprawdzamy czy połączenie jest typu SH i czy idzie na gripa
-                if(aparatListName.getKey().equals(kabelList.getPinTo())){
-                    if(kabelList.getColor().toUpperCase().equals("SH")){
+                if (aparatListName.getKey().contains(kabelList.getPositionTo())) {
+                    if (kabelList.getColor().toUpperCase().contains("SH")) {
                         //Sprawdzenie czy mamy informacje i tym połaczeniu w bazie
-                       if(!findSizeClip(kabelList).contains("Brak przewodu o nazwie: ")){
+                        if (findSizeClip(kabelList) != null) {
                             //Dobranie odpowiedniego rozmiaru zacisku do przewodu i dodanie go do mapy z zapotrzebawaniem
-                           int val = clipCounter.get(findByClipNumberStadlerID(findSizeClip(kabelList)).getClipNumberStadlerID());
-                           clipCounter.put(findSizeClip(kabelList), val + 1);
-                       }else{
-                           System.out.println(findSizeClip(kabelList));
-                       }
+
+                            int val = clipCounter.get(findByClipNumberStadlerID(findSizeClip(kabelList)).getClipNumberStadlerID());
+                            clipCounter.put(findSizeClip(kabelList), val + 1);
+                            informations.add(" Do kabla: " + kabelList.getNameCable() + " na gripa do kości: " + kabelList.getPositionTo() + " dobrano zacisk o numerze producenta: " + findSizeClip(kabelList));
+                        }
                     }
                 }
                 //Sprawdzamy czy połączenie jest typu SH i czy idzie na gripa
-                if(aparatListName.getKey().equals(kabelList.getPinFrom())){
-                    if(kabelList.getColor().toUpperCase().equals("SH")){
+                if (aparatListName.getKey().contains(kabelList.getPositionFrom())) {
+                    if (kabelList.getColor().toUpperCase().contains("SH")) {
                         //Sprawdzenie czy mamy informacje i tym połaczeniu w bazie
-                        if(!findSizeClip(kabelList).contains("Brak przewodu o nazwie: ")){
+                        if (findSizeClip(kabelList) != null) {
                             //Dobranie odpowiedniego rozmiaru zacisku do przewodu i dodanie go do mapy z zapotrzebawaniem
                             int val = clipCounter.get(findSizeClip(kabelList));
                             clipCounter.put(findSizeClip(kabelList), val + 1);
-                        }else{
-                            System.out.println(findSizeClip(kabelList));
+                            informations.add(" Do kabla: " + kabelList.getNameCable() + " na gripa do kości: " + kabelList.getPositionFrom() + " dobrano zacisk o numerze producenta: " + findSizeClip(kabelList));
                         }
                     }
                 }
             }
         }
-        return clipCounter;
+
+        Wrapper wrapper = Wrapper.builder()
+                .finalScore(clipCounter)
+                .errors(error)
+                .informations(informations)
+                .build();
+        return wrapper;
 
     }
 
-    public String findSizeClip(KabelList kabelList){
-        IsolationsCable isolationsCable = isolationsCableRepository.findByTypeIsolations(kabelList.getType1());
-        if(isolationsCable != null){
+    public String findSizeClip(KabelList kabelList) {
+        IsolationsCable isolationsCable = isolationsCableService.findByTypeIsolations(kabelList.getType1());
+        if (isolationsCable != null) {
             //System.out.println(clipLibraRepository.findBySize(isolationsCable.getSrednicaWew()));
-            ClipLibra clipLibra = clipLibraRepository.findBySize(isolationsCable.getSrednicaWew());
-            return clipLibra.getClipNumberStadlerID();
-        }else{
-            return "Brak przewodu o nazwie: " + kabelList.getType1();
+            if(findBySize(isolationsCable.getSrednicaWew()) != null){
+                ClipLibra clipLibra = findBySize(isolationsCable.getSrednicaWew());
+                return clipLibra.getClipNumberStadlerID();
+            }else if(isolationsCable.getSrednicaWew() > 0.0){
+                error.add("2## Brak zacisku o srednicy: " + isolationsCable.getSrednicaWew());
+
+            }
+            return null;
+        } else {
+            error.add("1## Brak przewodu o nazwie: " + kabelList.getType1());
+            return null;
         }
     }
 }
